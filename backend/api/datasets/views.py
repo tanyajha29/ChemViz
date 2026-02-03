@@ -1,6 +1,7 @@
 import pandas as pd
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -10,6 +11,7 @@ from .models import DatasetUpload
 
 class DatasetUploadView(APIView):
     parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         uploaded_file = request.FILES.get('file')
@@ -71,3 +73,20 @@ class DatasetUploadView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class DatasetSummaryListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        uploads = DatasetUpload.objects.order_by('-uploaded_at', '-id')[:5]
+        data = [
+            {
+                'id': upload.id,
+                'name': upload.name,
+                'uploaded_at': upload.uploaded_at,
+                'summary': upload.summary,
+            }
+            for upload in uploads
+        ]
+        return Response({'results': data}, status=status.HTTP_200_OK)
