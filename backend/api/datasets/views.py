@@ -1,4 +1,10 @@
+from io import BytesIO
+
 import pandas as pd
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -90,3 +96,86 @@ class DatasetSummaryListView(APIView):
             for upload in uploads
         ]
         return Response({'results': data}, status=status.HTTP_200_OK)
+
+
+class DatasetReportView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, upload_id):
+        try:
+            upload = DatasetUpload.objects.get(id=upload_id)
+        except DatasetUpload.DoesNotExist:
+            return Response(
+                {'error': 'Dataset upload not found.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            df = pd.read_csv(upload.file.path)
+        except Exception as exc:
+            return Response(
+                {'error': 'Failed to read CSV file.', 'details': str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=letter, title='ChemViz Report')
+        styles = getSampleStyleSheet()
+
+        story = []
+        story.append(Paragraph('ChemViz Report', styles['Title']))
+        story.append(Spacer(1, 12))
+        story.append(Paragraph(f'Dataset: {upload.name}', styles['Heading2']))
+        story.append(Paragraph(f'Uploaded: {upload.uploaded_at}', styles['Normal']))
+        story.append(Spacer(1, 12))
+
+        story.append(Paragraph('Summary Statistics', styles['Heading3']))
+        summary_items = upload.summary or {}
+        summary_rows = [
+            ['Total Equipment', summary_items.get('total_equipment')],
+            ['Average Flowrate', summary_items.get('avg_flowrate')],
+            ['Average Pressure', summary_items.get('avg_pressure')],
+            ['Average Temperature', summary_items.get('avg_temperature')],
+        ]
+        summary_table = Table(summary_rows, colWidths=[200, 300])
+        summary_table.setStyle(
+            TableStyle(
+                [
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ]
+            )
+        )
+        story.append(summary_table)
+        story.append(Spacer(1, 16))
+
+        story.append(Paragraph('Equipment Data (First 25 Rows)', styles['Heading3']))
+        columns = ['Equipment Name', 'Type', 'Flowrate', 'Pressure', 'Temperature']
+        existing_columns = [col for col in columns if col in df.columns]
+        preview = df[existing_columns].head(25)
+
+        table_data = [existing_columns] + preview.fillna('').values.tolist()
+        data_table = Table(table_data, repeatRows=1)
+        data_table.setStyle(
+            TableStyle(
+                [
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#ECECEC')),
+                    ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+                    ('FONTSIZE', (0, 0), (-1, -1), 8),
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ]
+            )
+        )
+        story.append(data_table)
+
+        doc.build(story)
+        buffer.seek(0)
+
+        response = Response(
+            buffer.getvalue(),
+            status=status.HTTP_200_OK,
+            content_type='application/pdf',
+        )
+        response['Content-Disposition'] = f'attachment; filename="chemviz-report-{upload_id}.pdf"'
+        return response
