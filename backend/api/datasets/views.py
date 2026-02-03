@@ -1,20 +1,11 @@
-import json
-
 import pandas as pd
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .analytics import REQUIRED_COLUMNS, compute_chemviz_analytics
 from .models import DatasetUpload
-
-REQUIRED_COLUMNS = [
-    'Equipment Name',
-    'Type',
-    'Flowrate',
-    'Pressure',
-    'Temperature',
-]
 
 
 class DatasetUploadView(APIView):
@@ -63,13 +54,7 @@ class DatasetUploadView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        numeric_summary = json.loads(df.describe(include='number').to_json())
-        summary = {
-            'row_count': int(len(df)),
-            'column_count': int(len(df.columns)),
-            'columns': normalized_columns,
-            'numeric_summary': numeric_summary,
-        }
+        summary = compute_chemviz_analytics(df)
 
         upload = DatasetUpload.objects.create(
             name=name or uploaded_file.name,
