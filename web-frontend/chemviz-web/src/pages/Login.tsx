@@ -27,7 +27,7 @@ export default function Login() {
 
   return (
     <div className="page">
-      <div className="auth-card glass fade-in">
+      <div className="auth-card glass fade-in neon-glow">
         <h1 className="page-title">Welcome Back</h1>
         <p className="page-subtitle">Sign in to access ChemViz.</p>
         <form onSubmit={handleSubmit}>

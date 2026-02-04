@@ -8,7 +8,7 @@ export default function History() {
         View all previously uploaded datasets and generated reports.
       </p>
 
-      <section className="table-card glass fade-in">
+      <section className="table-card glass fade-in neon-glow">
         <UploadHistory />
       </section>
     </div>

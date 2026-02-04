@@ -135,7 +135,7 @@ export default function Dashboard() {
 
       {/* CHARTS */}
       <section className="charts-grid">
-        <div className="chart-card glass glow-hover fade-in">
+        <div className="chart-card glass glow-hover fade-in neon-glow">
           <h2 className="section-title">Equipment Type Distribution</h2>
           {summary && typeDistributionData ? (
             <Bar data={typeDistributionData} options={chartOptions} />
@@ -144,7 +144,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="chart-card glass glow-hover fade-in">
+        <div className="chart-card glass glow-hover fade-in neon-glow">
           <h2 className="section-title">Average Parameters</h2>
           {summary && averagesData ? (
             <Bar data={averagesData} options={chartOptions} />
@@ -155,7 +155,7 @@ export default function Dashboard() {
       </section>
 
       {/* TABLE PLACEHOLDER */}
-      <section className="table-card glass fade-in">
+      <section className="table-card glass fade-in neon-glow">
         <h2 className="section-title">Latest Equipment Table</h2>
         <table className="data-table">
           <thead>
@@ -194,7 +194,7 @@ function SummaryCard({
   value: string | number;
 }) {
   return (
-    <div className="summary-card glass glow-hover fade-in">
+    <div className="summary-card glass glow-hover fade-in neon-glow">
       <div className="summary-icon">{icon}</div>
       <span className="summary-label">{label}</span>
       <span className="summary-value">{value}</span>

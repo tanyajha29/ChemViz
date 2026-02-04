@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 export default function Home() {
   return (
     <div className="page">
-      <section className="hero glass fade-in">
+      <section className="hero glass fade-in neon-glow">
         <h1 className="page-title">ChemViz</h1>
         <p className="page-subtitle">
           Data-first monitoring for chemical equipment. Upload, analyze, and
@@ -20,22 +20,22 @@ export default function Home() {
       </section>
 
       <section className="feature-grid">
-        <div className="feature-card glass glow-hover fade-in">
-          <h2 className="section-title">Real-Time Insights</h2>
+        <div className="feature-card glass glow-hover fade-in neon-glow">
+          <h2 className="section-title center-text">Real-Time Insights</h2>
           <p className="feature-text">
             Track flowrate, pressure, and temperature trends with instant visual
             feedback.
           </p>
         </div>
-        <div className="feature-card glass glow-hover fade-in">
-          <h2 className="section-title">Structured Uploads</h2>
+        <div className="feature-card glass glow-hover fade-in neon-glow">
+          <h2 className="section-title center-text">Structured Uploads</h2>
           <p className="feature-text">
             Validate CSV data automatically and keep your datasets clean and
             ready for analysis.
           </p>
         </div>
-        <div className="feature-card glass glow-hover fade-in">
-          <h2 className="section-title">Report Ready</h2>
+        <div className="feature-card glass glow-hover fade-in neon-glow">
+          <h2 className="section-title center-text">Report Ready</h2>
           <p className="feature-text">
             Generate PDF reports with summary analytics and structured tables in
             one click.
@@ -43,7 +43,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="stats-row glass fade-in">
+      <section className="stats-row glass fade-in neon-glow">
         <div className="stat-block">
           <span className="stat-value">5</span>
           <span className="stat-label">Recent Uploads</span>
@@ -58,30 +58,80 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="timeline glass fade-in">
-        <h2 className="section-title">How ChemViz Works</h2>
-        <ol className="timeline-list">
-          <li>
-            <span className="timeline-step">1</span>
-            Upload equipment CSVs with standardized columns.
-          </li>
-          <li>
-            <span className="timeline-step">2</span>
-            Review summary analytics and distributions instantly.
-          </li>
-          <li>
-            <span className="timeline-step">3</span>
-            Export polished PDF reports for teams and audits.
-          </li>
-        </ol>
+      <section className="home-split">
+        <div className="split-card glass fade-in neon-glow">
+          <h2 className="section-title center-text">Built for Lab Teams</h2>
+          <p className="feature-text">
+            Centralize equipment data, track performance shifts, and keep
+            compliance reporting tight with automated summaries.
+          </p>
+          <div className="split-highlights">
+            <span>Automated analytics</span>
+            <span>PDF reports</span>
+            <span>Token-secured APIs</span>
+          </div>
+        </div>
+        <div className="split-card glass fade-in neon-glow">
+          <h2 className="section-title center-text">Designed for Clarity</h2>
+          <p className="feature-text">
+            A focused dashboard keeps key metrics visible while minimizing
+            visual noise. Stay on top of what matters.
+          </p>
+          <div className="split-metrics">
+            <div>
+              <strong>3</strong>
+              <span>core metrics</span>
+            </div>
+            <div>
+              <strong>5</strong>
+              <span>latest datasets</span>
+            </div>
+            <div>
+              <strong>1</strong>
+              <span>PDF export</span>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="cta glass fade-in">
-        <h2 className="section-title">Ready to visualize your data?</h2>
-        <p className="feature-text">
+      <section className="timeline glass fade-in neon-glow">
+        <h2 className="section-title center-text">How ChemViz Works</h2>
+        <div className="workflow-grid">
+          <div className="workflow-step">
+            <span className="workflow-index">01</span>
+            <h3>Ingest & Validate</h3>
+            <p>
+              Upload standardized CSV datasets. ChemViz validates column schema
+              and data integrity before processing.
+            </p>
+          </div>
+          <div className="workflow-step">
+            <span className="workflow-index">02</span>
+            <h3>Analyze & Summarize</h3>
+            <p>
+              Compute equipment totals, averages, and distribution metrics with
+              fast, repeatable analytics.
+            </p>
+          </div>
+          <div className="workflow-step">
+            <span className="workflow-index">03</span>
+            <h3>Report & Share</h3>
+            <p>
+              Generate PDF-ready reports and share insights with teams and
+              stakeholders in seconds.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="cta glass fade-in neon-glow ">
+        <h2 className="section-title center-text">
+          Ready to visualize your data?
+        </h2>
+        <p className="feature-text center-text">
           Build a reliable equipment monitoring workflow in minutes.
         </p>
-        <div className="hero-actions">
+        <div className="hero-actions ">
           <Link className="nav-button" to="/register">
             Create Account
           </Link>

@@ -34,39 +34,66 @@ export default function Upload() {
 
   return (
     <div className="page">
-      <h1 className="page-title">Upload Dataset</h1>
-      <p className="page-subtitle">
-        Drag and drop or browse to upload equipment CSV files.
-      </p>
-      <form className="upload-card glass fade-in" onSubmit={handleSubmit}>
-        <label className="field-label" htmlFor="datasetName">
-          Dataset Name (optional)
-        </label>
-        <input
-          id="datasetName"
-          name="datasetName"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
-        <label className="field-label" htmlFor="csvFile">
-          CSV File
-        </label>
-        <div className="dropzone">
+      <div className="page-header">
+        <h1 className="page-title">Upload Dataset</h1>
+        <p className="page-subtitle">
+          Drag and drop or browse to upload equipment CSV files.
+        </p>
+      </div>
+
+      <div className="upload-layout">
+        <form className="upload-card glass fade-in neon-glow" onSubmit={handleSubmit}>
+          <label className="field-label" htmlFor="datasetName">
+            Dataset Name (optional)
+          </label>
           <input
-            id="csvFile"
-            name="csvFile"
-            type="file"
-            accept=".csv"
-            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+            id="datasetName"
+            name="datasetName"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
           />
-          <p>{file ? file.name : 'Drop CSV here or click to browse'}</p>
-        </div>
-        {error ? <p className="error-text">{error}</p> : null}
-        {message ? <p className="success-text">{message}</p> : null}
-        <button type="submit" className="nav-button" disabled={loading}>
-          {loading ? 'Uploading...' : 'Upload'}
-        </button>
-      </form>
+
+          <label className="field-label" htmlFor="csvFile">
+            CSV File
+          </label>
+          <div className="dropzone">
+            <input
+              id="csvFile"
+              name="csvFile"
+              type="file"
+              accept=".csv"
+              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+            />
+            <div className="dropzone-icon">⬆</div>
+            <p>{file ? file.name : 'Drop CSV here or click to browse'}</p>
+            <span className="dropzone-hint">
+              Required columns: Equipment Name, Type, Flowrate, Pressure,
+              Temperature
+            </span>
+          </div>
+
+          <div className="upload-actions">
+            <button type="submit" className="nav-button" disabled={loading}>
+              {loading ? 'Uploading...' : 'Upload'}
+            </button>
+            <span className="upload-meta-chip">CSV only</span>
+            <span className="upload-meta-chip">Max 5 uploads stored</span>
+          </div>
+
+          {error ? <p className="error-text">{error}</p> : null}
+          {message ? <p className="success-text">{message}</p> : null}
+        </form>
+
+        <aside className="upload-side glass fade-in neon-glow">
+          <h2 className="section-title">Upload Checklist</h2>
+          <ul className="upload-checklist">
+            <li>Use the official column headers.</li>
+            <li>Validate Flowrate, Pressure, Temperature values.</li>
+            <li>Keep datasets scoped to one experiment.</li>
+            <li>Download PDF reports after upload.</li>
+          </ul>
+        </aside>
+      </div>
     </div>
   );
 }

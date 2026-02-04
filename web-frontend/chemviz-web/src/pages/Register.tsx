@@ -28,7 +28,7 @@ export default function Register() {
 
   return (
     <div className="page">
-      <div className="auth-card glass fade-in">
+      <div className="auth-card glass fade-in neon-glow">
         <h1 className="page-title">Create Account</h1>
         <p className="page-subtitle">Start using ChemViz in minutes.</p>
         <form onSubmit={handleSubmit}>

@@ -11,7 +11,7 @@ export default function Navbar() {
   return (
     <header className="nav glass">
       <div className="nav-brand">
-        <span className="nav-dot" />
+        <img src="/logo.gif" alt="ChemViz logo" className="nav-logo" />
         <span className="nav-title">ChemViz</span>
       </div>
       <nav className="nav-links">
