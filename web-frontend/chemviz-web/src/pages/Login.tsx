@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { FiLogIn } from 'react-icons/fi';
+
 import { login } from '../api/auth';
 
 export default function Login() {
@@ -28,7 +30,10 @@ export default function Login() {
   return (
     <div className="page">
       <div className="auth-card glass fade-in neon-glow">
-        <h1 className="page-title">Welcome Back</h1>
+        <h1 className="page-title">
+          <FiLogIn className="inline-icon" />
+          Welcome Back
+        </h1>
         <p className="page-subtitle">Sign in to access ChemViz.</p>
         <form onSubmit={handleSubmit}>
           <label className="field-label" htmlFor="username">
@@ -54,6 +59,7 @@ export default function Login() {
           />
           {error ? <p className="error-text">{error}</p> : null}
           <button type="submit" className="nav-button" disabled={loading}>
+            <FiLogIn className="inline-icon" />
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>

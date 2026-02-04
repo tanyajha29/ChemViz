@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { FiUploadCloud, FiActivity, FiFileText, FiTrendingUp, FiCheckCircle, FiShare2 } from 'react-icons/fi';
 
 export default function Home() {
   return (
@@ -11,9 +12,11 @@ export default function Home() {
         </p>
         <div className="hero-actions">
           <Link className="nav-button" to="/upload">
+            <FiUploadCloud className="inline-icon" />
             Upload CSV
           </Link>
           <Link className="nav-link" to="/dashboard">
+            <FiTrendingUp className="inline-icon" />
             View Dashboard
           </Link>
         </div>
@@ -21,21 +24,30 @@ export default function Home() {
 
       <section className="feature-grid">
         <div className="feature-card glass glow-hover fade-in neon-glow">
-          <h2 className="section-title center-text">Real-Time Insights</h2>
+          <h2 className="section-title center-text">
+            <FiActivity className="inline-icon" />
+            Real-Time Insights
+          </h2>
           <p className="feature-text">
             Track flowrate, pressure, and temperature trends with instant visual
             feedback.
           </p>
         </div>
         <div className="feature-card glass glow-hover fade-in neon-glow">
-          <h2 className="section-title center-text">Structured Uploads</h2>
+          <h2 className="section-title center-text">
+            <FiUploadCloud className="inline-icon" />
+            Structured Uploads
+          </h2>
           <p className="feature-text">
             Validate CSV data automatically and keep your datasets clean and
             ready for analysis.
           </p>
         </div>
         <div className="feature-card glass glow-hover fade-in neon-glow">
-          <h2 className="section-title center-text">Report Ready</h2>
+          <h2 className="section-title center-text">
+            <FiFileText className="inline-icon" />
+            Report Ready
+          </h2>
           <p className="feature-text">
             Generate PDF reports with summary analytics and structured tables in
             one click.
@@ -99,7 +111,10 @@ export default function Home() {
         <div className="workflow-grid">
           <div className="workflow-step">
             <span className="workflow-index">01</span>
-            <h3>Ingest & Validate</h3>
+            <h3>
+              <FiCheckCircle className="inline-icon" />
+              Ingest & Validate
+            </h3>
             <p>
               Upload standardized CSV datasets. ChemViz validates column schema
               and data integrity before processing.
@@ -107,7 +122,10 @@ export default function Home() {
           </div>
           <div className="workflow-step">
             <span className="workflow-index">02</span>
-            <h3>Analyze & Summarize</h3>
+            <h3>
+              <FiActivity className="inline-icon" />
+              Analyze & Summarize
+            </h3>
             <p>
               Compute equipment totals, averages, and distribution metrics with
               fast, repeatable analytics.
@@ -115,7 +133,10 @@ export default function Home() {
           </div>
           <div className="workflow-step">
             <span className="workflow-index">03</span>
-            <h3>Report & Share</h3>
+            <h3>
+              <FiShare2 className="inline-icon" />
+              Report & Share
+            </h3>
             <p>
               Generate PDF-ready reports and share insights with teams and
               stakeholders in seconds.

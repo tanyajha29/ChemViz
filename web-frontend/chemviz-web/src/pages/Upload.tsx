@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FiClipboard, FiUploadCloud } from 'react-icons/fi';
 
 import { uploadDataset } from '../api/datasets';
 
@@ -64,7 +65,9 @@ export default function Upload() {
               accept=".csv"
               onChange={(event) => setFile(event.target.files?.[0] ?? null)}
             />
-            <div className="dropzone-icon">⬆</div>
+            <div className="dropzone-icon">
+              <FiUploadCloud />
+            </div>
             <p>{file ? file.name : 'Drop CSV here or click to browse'}</p>
             <span className="dropzone-hint">
               Required columns: Equipment Name, Type, Flowrate, Pressure,
@@ -85,7 +88,10 @@ export default function Upload() {
         </form>
 
         <aside className="upload-side glass fade-in neon-glow">
-          <h2 className="section-title">Upload Checklist</h2>
+          <h2 className="section-title">
+            <FiClipboard className="inline-icon" />
+            Upload Checklist
+          </h2>
           <ul className="upload-checklist">
             <li>Use the official column headers.</li>
             <li>Validate Flowrate, Pressure, Temperature values.</li>
@@ -97,3 +103,4 @@ export default function Upload() {
     </div>
   );
 }
+

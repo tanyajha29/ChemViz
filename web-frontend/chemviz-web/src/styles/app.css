@@ -92,6 +92,9 @@ body {
   text-decoration: none;
   padding: 0.4rem 0.2rem;
   transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .nav-link:hover {
@@ -131,6 +134,9 @@ body {
   text-decoration: none;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-button:hover {
@@ -181,6 +187,17 @@ body {
   font-size: 1.4rem;
   font-weight: 700;
   margin-bottom: 0.8rem;
+}
+
+.inline-icon {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.95rem;
 }
 
 .center-text {
@@ -338,11 +355,17 @@ body {
 }
 
 .workflow-index {
-  display: inline-block;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 0.8rem;
   font-size: 0.85rem;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 32, 39, 0.6);
 }
 
 /* ---------- HOME SPLIT ---------- */

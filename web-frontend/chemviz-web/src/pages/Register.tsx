@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { FiUserPlus } from 'react-icons/fi';
+
 import { registerUser } from '../api/auth';
 
 export default function Register() {
@@ -29,7 +31,10 @@ export default function Register() {
   return (
     <div className="page">
       <div className="auth-card glass fade-in neon-glow">
-        <h1 className="page-title">Create Account</h1>
+        <h1 className="page-title">
+          <FiUserPlus className="inline-icon" />
+          Create Account
+        </h1>
         <p className="page-subtitle">Start using ChemViz in minutes.</p>
         <form onSubmit={handleSubmit}>
           <label className="field-label" htmlFor="username">
@@ -60,6 +65,7 @@ export default function Register() {
           />
           {error ? <p className="error-text">{error}</p> : null}
           <button type="submit" className="nav-button" disabled={loading}>
+            <FiUserPlus className="inline-icon" />
             {loading ? 'Creating...' : 'Register'}
           </button>
         </form>

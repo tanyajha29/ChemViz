@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { FiDownload, FiFolder } from 'react-icons/fi';
+
 import { fetchReport, fetchSummaries, UploadResult } from '../api/datasets';
 
 export default function UploadHistory() {
@@ -50,7 +52,10 @@ export default function UploadHistory() {
 
   return (
     <div>
-      <h2 className="section-title">Recent Uploads</h2>
+      <h2 className="section-title">
+        <FiFolder className="inline-icon" />
+        Recent Uploads
+      </h2>
       {error ? <p className="error-text">{error}</p> : null}
       {!uploads.length ? <p className="empty-state">No uploads found.</p> : null}
       {uploads.length ? (
@@ -74,6 +79,7 @@ export default function UploadHistory() {
                     onClick={() => handleDownload(upload.id, upload.name)}
                     disabled={downloadingId === upload.id}
                   >
+                    <FiDownload className="inline-icon" />
                     {downloadingId === upload.id ? 'Downloading...' : 'Download PDF'}
                   </button>
                 </td>
