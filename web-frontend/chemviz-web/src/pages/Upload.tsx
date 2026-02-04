@@ -33,32 +33,37 @@ export default function Upload() {
   };
 
   return (
-    <div>
-      <h1>Upload</h1>
-      <p>Upload CSV files to ChemViz.</p>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="datasetName">Dataset Name (optional)</label>
-        </div>
+    <div className="page">
+      <h1 className="page-title">Upload Dataset</h1>
+      <p className="page-subtitle">
+        Drag and drop or browse to upload equipment CSV files.
+      </p>
+      <form className="upload-card glass fade-in" onSubmit={handleSubmit}>
+        <label className="field-label" htmlFor="datasetName">
+          Dataset Name (optional)
+        </label>
         <input
           id="datasetName"
           name="datasetName"
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
-        <div>
-          <label htmlFor="csvFile">CSV File</label>
+        <label className="field-label" htmlFor="csvFile">
+          CSV File
+        </label>
+        <div className="dropzone">
+          <input
+            id="csvFile"
+            name="csvFile"
+            type="file"
+            accept=".csv"
+            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+          />
+          <p>{file ? file.name : 'Drop CSV here or click to browse'}</p>
         </div>
-        <input
-          id="csvFile"
-          name="csvFile"
-          type="file"
-          accept=".csv"
-          onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-        />
-        {error ? <p>{error}</p> : null}
-        {message ? <p>{message}</p> : null}
-        <button type="submit" disabled={loading}>
+        {error ? <p className="error-text">{error}</p> : null}
+        {message ? <p className="success-text">{message}</p> : null}
+        <button type="submit" className="nav-button" disabled={loading}>
           {loading ? 'Uploading...' : 'Upload'}
         </button>
       </form>

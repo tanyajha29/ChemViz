@@ -50,11 +50,11 @@ export default function UploadHistory() {
 
   return (
     <div>
-      <h2>Recent Uploads</h2>
-      {error ? <p>{error}</p> : null}
-      {!uploads.length ? <p>No uploads found.</p> : null}
+      <h2 className="section-title">Recent Uploads</h2>
+      {error ? <p className="error-text">{error}</p> : null}
+      {!uploads.length ? <p className="empty-state">No uploads found.</p> : null}
       {uploads.length ? (
-        <table>
+        <table className="data-table">
           <thead>
             <tr>
               <th>Dataset</th>
@@ -70,6 +70,7 @@ export default function UploadHistory() {
                 <td>
                   <button
                     type="button"
+                    className="nav-button"
                     onClick={() => handleDownload(upload.id, upload.name)}
                     disabled={downloadingId === upload.id}
                   >
