@@ -5,3 +5,5 @@ drf-spectacular
 python-dotenv
 pandas
 reportlab
+PyQt5
+requests
