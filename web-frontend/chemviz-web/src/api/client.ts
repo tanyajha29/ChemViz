@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { getAuthToken } from './token';
+import { clearAuthToken, getAuthToken } from './token';
 
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000';
@@ -17,3 +17,14 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      clearAuthToken();
+      window.dispatchEvent(new Event('auth:logout'));
+    }
+    return Promise.reject(error);
+  }
+);
