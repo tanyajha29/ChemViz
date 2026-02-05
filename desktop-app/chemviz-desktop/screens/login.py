@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+from services.api_client import client
+
 
 class LoginScreen(QWidget):
     login_success = pyqtSignal()
@@ -39,18 +41,27 @@ class LoginScreen(QWidget):
         self.password.setPlaceholderText("Password")
         self.password.setEchoMode(QLineEdit.Password)
 
+        self.error_label = QLabel("")
+        self.error_label.setObjectName("errorText")
+
         self.button = QPushButton("Sign In")
         self.button.setObjectName("primaryButton")
-        self.button.clicked.connect(self._emit_login)
+        self.button.clicked.connect(self._handle_login)
 
         card_layout.addWidget(title)
         card_layout.addWidget(subtitle)
         card_layout.addWidget(self.username)
         card_layout.addWidget(self.password)
+        card_layout.addWidget(self.error_label)
         card_layout.addWidget(self.button)
 
         layout.addWidget(card)
         layout.addStretch()
 
-    def _emit_login(self) -> None:
-        self.login_success.emit()
+    def _handle_login(self) -> None:
+        self.error_label.setText("")
+        try:
+            client.login(self.username.text().strip(), self.password.text())
+            self.login_success.emit()
+        except Exception:
+            self.error_label.setText("Login failed. Check credentials.")

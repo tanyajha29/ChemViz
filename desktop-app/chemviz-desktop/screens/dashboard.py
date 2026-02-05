@@ -1,10 +1,6 @@
-from PyQt5.QtWidgets import (
-    QFrame,
-    QGridLayout,
-    QLabel,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import QFrame, QGridLayout, QLabel, QVBoxLayout, QWidget
+
+from services.api_client import client
 
 
 class DashboardScreen(QWidget):
@@ -24,14 +20,16 @@ class DashboardScreen(QWidget):
 
         summary_grid = QGridLayout()
         summary_grid.setSpacing(12)
-        cards = [
-            ("Total Equipment", "120"),
-            ("Avg Flowrate", "3.2"),
-            ("Avg Pressure", "1.4"),
-            ("Avg Temperature", "67.1"),
+        self.summary_cards = {}
+        labels = [
+            "Total Equipment",
+            "Avg Flowrate",
+            "Avg Pressure",
+            "Avg Temperature",
         ]
-        for idx, (label, value) in enumerate(cards):
-            card = self._summary_card(label, value)
+        for idx, label in enumerate(labels):
+            card, value_widget = self._summary_card(label, "—")
+            self.summary_cards[label] = value_widget
             summary_grid.addWidget(card, 0, idx)
 
         layout.addLayout(summary_grid)
@@ -50,7 +48,26 @@ class DashboardScreen(QWidget):
         layout.addWidget(table_card)
         layout.addStretch()
 
-    def _summary_card(self, label: str, value: str) -> QFrame:
+    def refresh(self) -> None:
+        try:
+            data = client.fetch_summaries()
+            results = data.get("results", [])
+            summary = results[0]["summary"] if results else {}
+        except Exception:
+            summary = {}
+
+        mapping = {
+            "Total Equipment": summary.get("total_equipment", "—"),
+            "Avg Flowrate": summary.get("avg_flowrate", "—"),
+            "Avg Pressure": summary.get("avg_pressure", "—"),
+            "Avg Temperature": summary.get("avg_temperature", "—"),
+        }
+        for label, value in mapping.items():
+            widget = self.summary_cards.get(label)
+            if widget is not None:
+                widget.setText(str(value))
+
+    def _summary_card(self, label: str, value: str) -> tuple[QFrame, QLabel]:
         card = QFrame()
         card.setObjectName("glassCard")
         card_layout = QVBoxLayout(card)
@@ -64,4 +81,4 @@ class DashboardScreen(QWidget):
 
         card_layout.addWidget(label_widget)
         card_layout.addWidget(value_widget)
-        return card
+        return card, value_widget

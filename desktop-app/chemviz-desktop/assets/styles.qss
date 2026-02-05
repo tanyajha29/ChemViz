@@ -68,3 +68,7 @@ QMainWindow {
   font-weight: 600;
   border: none;
 }
+
+#errorText {
+  color: #f87171;
+}

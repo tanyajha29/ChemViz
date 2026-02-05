@@ -52,6 +52,7 @@ class MainWindow(QMainWindow):
         self.root_stack.setCurrentWidget(self.app_shell)
         self.nav.set_active("dashboard")
         self.content_stack.setCurrentWidget(self.dashboard_screen)
+        self.dashboard_screen.refresh()
 
     def _on_route_change(self, route: str) -> None:
         if route == "dashboard":
