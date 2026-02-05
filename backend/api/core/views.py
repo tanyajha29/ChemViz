@@ -1,12 +1,14 @@
 from django.contrib.auth import get_user_model
+from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import status
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def healthcheck(request):
     return Response({'status': 'ok'})
 
@@ -15,6 +17,7 @@ def healthcheck(request):
 @permission_classes([AllowAny])
 def register(request):
     User = get_user_model()
+
     username = request.data.get('username', '').strip()
     email = request.data.get('email', '').strip()
     password = request.data.get('password', '')
@@ -31,10 +34,26 @@ def register(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    user = User.objects.create_user(username=username, email=email, password=password)
+    user = User.objects.create_user(
+        username=username,
+        email=email,
+        password=password,
+    )
+
     token, _ = Token.objects.get_or_create(user=user)
 
     return Response(
-        {'token': token.key, 'username': user.username, 'email': user.email},
+        {
+            'token': token.key,
+            'username': user.username,
+            'email': user.email,
+        },
         status=status.HTTP_201_CREATED,
     )
+
+
+class PublicAuthTokenView(ObtainAuthToken):
+    """
+    Public login endpoint.
+    """
+    permission_classes = [AllowAny]

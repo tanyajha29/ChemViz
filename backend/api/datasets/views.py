@@ -65,6 +65,7 @@ class DatasetUploadView(APIView):
         summary = compute_chemviz_analytics(df)
 
         upload = DatasetUpload.objects.create(
+            user=request.user,  # 🔒 USER BINDING
             name=name or uploaded_file.name,
             file=uploaded_file,
             summary=summary,
@@ -85,7 +86,12 @@ class DatasetSummaryListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        uploads = DatasetUpload.objects.order_by('-uploaded_at', '-id')[:5]
+        uploads = (
+            DatasetUpload.objects
+            .filter(user=request.user)  # 🔒 USER FILTER
+            .order_by('-uploaded_at', '-id')[:5]
+        )
+
         data = [
             {
                 'id': upload.id,
@@ -103,10 +109,13 @@ class DatasetReportView(APIView):
 
     def get(self, request, upload_id):
         try:
-            upload = DatasetUpload.objects.get(id=upload_id)
+            upload = DatasetUpload.objects.get(
+                id=upload_id,
+                user=request.user  # 🔒 OWNER CHECK
+            )
         except DatasetUpload.DoesNotExist:
             return Response(
-                {'error': 'Dataset upload not found.'},
+                {'error': 'Dataset not found or access denied.'},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -130,52 +139,27 @@ class DatasetReportView(APIView):
         story.append(Spacer(1, 12))
 
         story.append(Paragraph('Summary Statistics', styles['Heading3']))
-        summary_items = upload.summary or {}
+        s = upload.summary or {}
         summary_rows = [
-            ['Total Equipment', summary_items.get('total_equipment')],
-            ['Average Flowrate', summary_items.get('avg_flowrate')],
-            ['Average Pressure', summary_items.get('avg_pressure')],
-            ['Average Temperature', summary_items.get('avg_temperature')],
+            ['Total Equipment', s.get('total_equipment')],
+            ['Average Flowrate', s.get('avg_flowrate')],
+            ['Average Pressure', s.get('avg_pressure')],
+            ['Average Temperature', s.get('avg_temperature')],
         ]
-        summary_table = Table(summary_rows, colWidths=[200, 300])
-        summary_table.setStyle(
+
+        table = Table(summary_rows, colWidths=[200, 300])
+        table.setStyle(
             TableStyle(
                 [
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
                     ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
                 ]
             )
         )
-        story.append(summary_table)
-        story.append(Spacer(1, 16))
-
-        story.append(Paragraph('Equipment Data (First 25 Rows)', styles['Heading3']))
-        columns = ['Equipment Name', 'Type', 'Flowrate', 'Pressure', 'Temperature']
-        existing_columns = [col for col in columns if col in df.columns]
-        preview = df[existing_columns].head(25)
-
-        table_data = [existing_columns] + preview.fillna('').values.tolist()
-        data_table = Table(table_data, repeatRows=1)
-        data_table.setStyle(
-            TableStyle(
-                [
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#ECECEC')),
-                    ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
-                    ('FONTSIZE', (0, 0), (-1, -1), 8),
-                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                ]
-            )
-        )
-        story.append(data_table)
-
+        story.append(table)
         doc.build(story)
-        buffer.seek(0)
 
-        response = Response(
-            buffer.getvalue(),
-            status=status.HTTP_200_OK,
-            content_type='application/pdf',
-        )
+        buffer.seek(0)
+        response = Response(buffer.getvalue(), content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="chemviz-report-{upload_id}.pdf"'
         return response
