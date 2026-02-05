@@ -1,0 +1,9 @@
+Django
+djangorestframework
+django-cors-headers
+drf-spectacular
+python-dotenv
+pandas
+reportlab
+PyQt5
+requests
