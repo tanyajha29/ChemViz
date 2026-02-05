@@ -1,0 +1,70 @@
+QWidget {
+  background-color: #0b0f1a;
+  color: #e5e7eb;
+  font-family: "Segoe UI";
+  font-size: 13px;
+}
+
+QMainWindow {
+  background-color: #0b0f1a;
+}
+
+#navPanel {
+  background-color: #0f172a;
+  border-radius: 14px;
+}
+
+#navButton {
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-align: left;
+  background-color: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#navButton[active="true"] {
+  background-color: #1f2937;
+  border: 1px solid rgba(124, 58, 237, 0.5);
+}
+
+#glassCard {
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+}
+
+#pageTitle {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#pageSubtitle {
+  color: #9ca3af;
+}
+
+#cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#cardSubtitle {
+  color: #9ca3af;
+}
+
+#cardLabel {
+  color: #9ca3af;
+}
+
+#cardValue {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#primaryButton {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: 600;
+  border: none;
+}
