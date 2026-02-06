@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { FiUserPlus } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
+import { FiLock, FiMail, FiUser, FiUserPlus } from 'react-icons/fi';
 
 import { registerUser } from '../api/auth';
 
@@ -21,7 +20,7 @@ export default function Register() {
     try {
       await registerUser(username, email, password);
       navigate('/dashboard');
-    } catch (err: unknown) {
+    } catch {
       setError('Registration failed. Please try again.');
     } finally {
       setLoading(false);
@@ -29,46 +28,62 @@ export default function Register() {
   };
 
   return (
-    <div className="page">
-      <div className="auth-card glass fade-in neon-glow">
-        <h1 className="page-title">
-          <FiUserPlus className="inline-icon" />
-          Create Account
-        </h1>
-        <p className="page-subtitle">Start using ChemViz in minutes.</p>
-        <form onSubmit={handleSubmit}>
-          <label className="field-label" htmlFor="username">
-            Username
-          </label>
-          <input
-            id="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <label className="field-label" htmlFor="email">
-            Email (optional)
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-          <label className="field-label" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          {error ? <p className="error-text">{error}</p> : null}
-          <button type="submit" className="nav-button" disabled={loading}>
-            <FiUserPlus className="inline-icon" />
-            {loading ? 'Creating...' : 'Register'}
+    <div className="auth-wrapper">
+      <div className="bg-shape shape-1" />
+      <div className="bg-shape shape-2" />
+
+      <div className="auth-card">
+        <div className="auth-header">
+          <FiUserPlus className="auth-icon" />
+          <h1>Create Account</h1>
+          <p>
+            Start using <strong>ChemViz</strong> today
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="input-group">
+            <FiUser className="input-icon" />
+            <input
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <FiMail className="input-icon" />
+            <input
+              type="email"
+              placeholder="Email (optional)"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="input-group">
+            <FiLock className="input-icon" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {error && <p className="error-text">{error}</p>}
+
+          <button type="submit" disabled={loading}>
+            {loading ? 'Creating account…' : 'Register'}
           </button>
         </form>
+
+        <p className="auth-footer">
+          Already have an account?
+          <Link to="/login"> Sign in</Link>
+        </p>
       </div>
     </div>
   );

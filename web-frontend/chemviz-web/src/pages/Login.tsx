@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { FiLogIn } from 'react-icons/fi';
-
+import { useNavigate, Link } from 'react-router-dom';
+import { FiLogIn, FiUser, FiLock } from 'react-icons/fi';
 import { login } from '../api/auth';
 
 export default function Login() {
@@ -12,7 +10,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
     setLoading(true);
@@ -20,49 +18,61 @@ export default function Login() {
     try {
       await login(username, password);
       navigate('/dashboard');
-    } catch (err: unknown) {
-      setError('Login failed. Check your credentials.');
+    } catch {
+      setError('Invalid username or password');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="page">
-      <div className="auth-card glass fade-in neon-glow">
-        <h1 className="page-title">
-          <FiLogIn className="inline-icon" />
-          Welcome Back
-        </h1>
-        <p className="page-subtitle">Sign in to access ChemViz.</p>
-        <form onSubmit={handleSubmit}>
-          <label className="field-label" htmlFor="username">
-            Username
-          </label>
-          <input
-            id="username"
-            name="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            autoComplete="username"
-          />
-          <label className="field-label" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="current-password"
-          />
-          {error ? <p className="error-text">{error}</p> : null}
-          <button type="submit" className="nav-button" disabled={loading}>
-            <FiLogIn className="inline-icon" />
-            {loading ? 'Signing in...' : 'Sign In'}
+    <div className="auth-wrapper">
+      {/* floating background shapes */}
+      <div className="bg-shape shape-1" />
+      <div className="bg-shape shape-2" />
+
+      <div className="auth-card">
+        <div className="auth-header">
+          <FiLogIn className="auth-icon" />
+          <h1>Welcome Back</h1>
+          <p>Sign in to continue to <strong>ChemViz</strong></p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="input-group">
+            <FiUser className="input-icon" />
+            <input
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <FiLock className="input-icon" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+            />
+          </div>
+
+          {error && <p className="error-text">{error}</p>}
+
+          <button type="submit" disabled={loading}>
+            {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
+
+        <p className="auth-footer">
+          Don’t have an account?
+          <Link to="/register"> Create one</Link>
+        </p>
       </div>
     </div>
   );
