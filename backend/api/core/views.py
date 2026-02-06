@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 
@@ -49,6 +49,19 @@ def register(request):
             'email': user.email,
         },
         status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def me(request):
+    user = request.user
+    return Response(
+        {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+        }
     )
 
 

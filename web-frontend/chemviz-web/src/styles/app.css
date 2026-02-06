@@ -410,6 +410,31 @@ body::after {
   font-size: 0.9rem;
 }
 
+/* ---------- PROFILE ---------- */
+.profile-card {
+  width: min(600px, 100%);
+  padding: 2rem;
+  display: grid;
+  gap: 1.4rem;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-label {
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.profile-value {
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 1024px) {
   .page {
