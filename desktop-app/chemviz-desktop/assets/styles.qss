@@ -1,3 +1,6 @@
+/* =========================
+   GLOBAL BASE
+========================= */
 QWidget {
   background-color: #0b0f16;
   color: #e5e7eb;
@@ -9,51 +12,75 @@ QMainWindow {
   background-color: #0b0f16;
 }
 
+/* =========================
+   NAVIGATION PANEL
+========================= */
 #navPanel {
   background-color: #0f172a;
-  border-radius: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Nav Buttons */
 #navButton {
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
   text-align: left;
-  background-color: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: transparent;
+  border: 1px solid transparent;
 }
 
 #navButton:hover {
-  background-color: #111827;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 #navButton[active="true"] {
-  background-color: #111827;
-  border: 1px solid rgba(59, 130, 246, 0.6);
-  padding-left: 9px;
+  background-color: rgba(59, 130, 246, 0.12);
   border-left: 3px solid #3b82f6;
+  padding-left: 11px;
 }
 
-#glassCard {
-  background-color: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-}
-
+/* =========================
+   GLASS / CARDS
+========================= */
+#glassCard,
 #kpiCard {
-  background-color: #0f172a;
+  background-color: rgba(15, 23, 42, 0.85);
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
 }
 
+/* Elevated card on hover */
+#glassCard:hover,
+#kpiCard:hover {
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+/* =========================
+   PAGE TYPOGRAPHY
+========================= */
 #pageTitle {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 600;
 }
 
 #pageSubtitle {
   color: #9ca3af;
+  font-size: 13px;
 }
 
+#sectionHeader {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* =========================
+   CARD TEXT
+========================= */
 #cardTitle {
   font-size: 16px;
   font-weight: 600;
@@ -61,9 +88,11 @@ QMainWindow {
 
 #cardSubtitle {
   color: #9ca3af;
+  font-size: 12px;
 }
 
-#cardLabel {
+#cardLabel,
+#kpiLabel {
   color: #9ca3af;
   font-size: 12px;
 }
@@ -73,56 +102,100 @@ QMainWindow {
   font-weight: 700;
 }
 
-#kpiLabel {
-  color: #9ca3af;
-  font-size: 12px;
-}
-
 #kpiValue {
-  color: #e5e7eb;
   font-size: 22px;
   font-weight: 700;
+  color: #e5e7eb;
 }
 
+/* =========================
+   INPUT FIELDS
+========================= */
+QLineEdit {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+QLineEdit:hover {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+QLineEdit:focus {
+  border: 1px solid rgba(59, 130, 246, 0.9);
+  background-color: #0b1220;
+}
+
+/* =========================
+   BUTTONS
+========================= */
 #primaryButton {
-  padding: 10px 14px;
-  border-radius: 8px;
-  background-color: #3b82f6;
+  padding: 11px 16px;
+  border-radius: 10px;
+  background-color: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 #3b82f6,
+    stop:1 #2563eb
+  );
   color: white;
   font-weight: 600;
   border: none;
 }
 
 #primaryButton:hover {
-  background-color: #2563eb;
+  background-color: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 #2563eb,
+    stop:1 #1d4ed8
+  );
 }
 
-QLineEdit {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background-color: #0f172a;
-  color: #e5e7eb;
+#primaryButton:pressed {
+  background-color: #1e40af;
 }
 
-QLineEdit:focus {
-  border: 1px solid rgba(59, 130, 246, 0.8);
+/* =========================
+   DROP ZONE
+========================= */
+#dropZone {
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  background-color: rgba(11, 15, 22, 0.9);
 }
 
+#dropZone:hover {
+  border: 1px dashed rgba(59, 130, 246, 0.6);
+  background-color: rgba(15, 23, 42, 0.9);
+}
+
+/* =========================
+   ERROR / STATUS
+========================= */
 #errorText {
   color: #f87171;
+  font-size: 12px;
 }
 
-#sectionHeader {
-  font-size: 14px;
-  font-weight: 600;
-  color: #e5e7eb;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+/* =========================
+   SCROLLBARS
+========================= */
+QScrollBar:vertical {
+  width: 8px;
+  background: transparent;
 }
 
-#dropZone {
-  border: 1px dashed rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  background-color: #0b0f16;
+QScrollBar::handle:vertical {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+QScrollBar::handle:vertical:hover {
+  background: rgba(59, 130, 246, 0.6);
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line {
+  height: 0;
 }
