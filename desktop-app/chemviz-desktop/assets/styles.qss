@@ -1,5 +1,5 @@
 /* =========================
-   GLOBAL BASE
+   BASE
 ========================= */
 QWidget {
   background-color: #0b0f16;
@@ -13,52 +13,86 @@ QMainWindow {
 }
 
 /* =========================
-   NAVIGATION PANEL
+   NAVIGATION
 ========================= */
 #navPanel {
-  background-color: #0f172a;
-  border-radius: 14px;
+  background: qlineargradient(
+    x1:0, y1:0, x2:0, y2:1,
+    stop:0 #0f1422,
+    stop:1 #151b2b
+  );
+  border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Nav Buttons */
-#navButton {
-  padding: 12px 14px;
-  border-radius: 10px;
+#logoBadge {
+  background: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 #2563eb,
+    stop:1 #38bdf8
+  );
+  border-radius: 14px;
+}
+
+#logoGlyph {
+  color: white;
+  font-weight: 700;
+}
+
+#appName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+#navItem {
   text-align: left;
+  padding: 12px 16px;
+  border-radius: 12px;
   background-color: transparent;
+  color: #cbd5e1;
   border: 1px solid transparent;
 }
 
-#navButton:hover {
+#navItem:hover {
   background-color: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-#navButton[active="true"] {
-  background-color: rgba(59, 130, 246, 0.12);
-  border-left: 3px solid #3b82f6;
-  padding-left: 11px;
+#navItem[active="true"] {
+  background: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 rgba(59, 130, 246, 0.25),
+    stop:1 rgba(56, 189, 248, 0.2)
+  );
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+#themeButton {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: #cbd5e1;
+}
+
+#themeButton:hover {
+  background-color: rgba(59, 130, 246, 0.25);
+}
+
+#navMeta {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+#navMetaMuted {
+  color: #6b7280;
+  font-size: 11px;
 }
 
 /* =========================
-   GLASS / CARDS
-========================= */
-#glassCard,
-#kpiCard {
-  background-color: rgba(15, 23, 42, 0.85);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* Elevated card on hover */
-#glassCard:hover,
-#kpiCard:hover {
-  border: 1px solid rgba(59, 130, 246, 0.25);
-}
-
-/* =========================
-   PAGE TYPOGRAPHY
+   TYPOGRAPHY
 ========================= */
 #pageTitle {
   font-size: 26px;
@@ -66,50 +100,234 @@ QMainWindow {
 }
 
 #pageSubtitle {
-  color: #9ca3af;
+  color: #94a3b8;
   font-size: 13px;
 }
 
-#sectionHeader {
-  font-size: 14px;
-  font-weight: 600;
-  color: #e5e7eb;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* =========================
-   CARD TEXT
-========================= */
-#cardTitle {
+#sectionTitle {
   font-size: 16px;
   font-weight: 600;
 }
 
+#sectionSubtitle {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+#cardTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+
 #cardSubtitle {
-  color: #9ca3af;
+  color: #94a3b8;
   font-size: 12px;
 }
 
-#cardLabel,
+#tileTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#tileSubtitle {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+#primaryButton {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background-color: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 #2563eb,
+    stop:1 #38bdf8
+  );
+  color: white;
+  font-weight: 600;
+  border: none;
+}
+
+#primaryButton:hover {
+  background-color: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 #1d4ed8,
+    stop:1 #0ea5e9
+  );
+}
+
+#ghostButton {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+}
+
+#ghostButton:hover {
+  border: 1px solid rgba(59, 130, 246, 0.6);
+  color: #93c5fd;
+}
+
+/* =========================
+   KPI CARDS
+========================= */
+#kpiCard {
+  background-color: #121826;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#kpiIcon {
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+#kpiIcon[variant="blue"] { background-color: rgba(37, 99, 235, 0.35); }
+#kpiIcon[variant="purple"] { background-color: rgba(168, 85, 247, 0.35); }
+#kpiIcon[variant="orange"] { background-color: rgba(249, 115, 22, 0.35); }
+#kpiIcon[variant="green"] { background-color: rgba(16, 185, 129, 0.35); }
+
 #kpiLabel {
-  color: #9ca3af;
+  color: #94a3b8;
   font-size: 12px;
-}
-
-#cardValue {
-  font-size: 20px;
-  font-weight: 700;
 }
 
 #kpiValue {
   font-size: 22px;
-  font-weight: 700;
-  color: #e5e7eb;
+  font-weight: 600;
+}
+
+#kpiDelta {
+  font-size: 12px;
+}
+
+#kpiDelta[trend="up"] { color: #34d399; }
+#kpiDelta[trend="down"] { color: #f87171; }
+
+/* =========================
+   SECTION CARDS
+========================= */
+#sectionCard,
+#uploadCard,
+#infoCard,
+#chartTile,
+#historyCard,
+#glassCard {
+  background-color: #111827;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#chartArea {
+  background-color: #0f172a;
+  border-radius: 14px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+#chartPlaceholder {
+  color: #94a3b8;
 }
 
 /* =========================
-   INPUT FIELDS
+   TABLES
+========================= */
+#tableContainer {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#tableHeader {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#tableHeaderText {
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#tableRow {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+#tableRow:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+#tableCell {
+  color: #e2e8f0;
+  font-size: 12px;
+}
+
+#statusPill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+#statusPill[state="success"] {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+#statusPill[state="warning"] {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+/* =========================
+   UPLOAD
+========================= */
+#uploadDrop {
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background-color: rgba(15, 23, 42, 0.7);
+}
+
+#uploadDrop:hover {
+  border: 1px dashed rgba(59, 130, 246, 0.6);
+}
+
+#uploadIcon,
+#infoIcon,
+#tileIcon,
+#historyIcon {
+  border-radius: 12px;
+  background-color: rgba(59, 130, 246, 0.18);
+}
+
+/* =========================
+   HISTORY
+========================= */
+#historyItem {
+  background-color: rgba(15, 23, 42, 0.6);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+#historyTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#historySubtitle {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+#historyMeta {
+  color: #64748b;
+  font-size: 11px;
+}
+
+/* =========================
+   FORM INPUTS
 ========================= */
 QLineEdit {
   padding: 10px 12px;
@@ -120,58 +338,16 @@ QLineEdit {
 }
 
 QLineEdit:hover {
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 QLineEdit:focus {
-  border: 1px solid rgba(59, 130, 246, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.7);
   background-color: #0b1220;
 }
 
 /* =========================
-   BUTTONS
-========================= */
-#primaryButton {
-  padding: 11px 16px;
-  border-radius: 10px;
-  background-color: qlineargradient(
-    x1:0, y1:0, x2:1, y2:1,
-    stop:0 #3b82f6,
-    stop:1 #2563eb
-  );
-  color: white;
-  font-weight: 600;
-  border: none;
-}
-
-#primaryButton:hover {
-  background-color: qlineargradient(
-    x1:0, y1:0, x2:1, y2:1,
-    stop:0 #2563eb,
-    stop:1 #1d4ed8
-  );
-}
-
-#primaryButton:pressed {
-  background-color: #1e40af;
-}
-
-/* =========================
-   DROP ZONE
-========================= */
-#dropZone {
-  border: 1px dashed rgba(255, 255, 255, 0.18);
-  border-radius: 16px;
-  background-color: rgba(11, 15, 22, 0.9);
-}
-
-#dropZone:hover {
-  border: 1px dashed rgba(59, 130, 246, 0.6);
-  background-color: rgba(15, 23, 42, 0.9);
-}
-
-/* =========================
-   ERROR / STATUS
+   ERROR
 ========================= */
 #errorText {
   color: #f87171;
@@ -187,7 +363,7 @@ QScrollBar:vertical {
 }
 
 QScrollBar::handle:vertical {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 4px;
 }
 

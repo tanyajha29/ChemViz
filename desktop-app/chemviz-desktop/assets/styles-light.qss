@@ -1,0 +1,289 @@
+/* =========================
+   BASE (LIGHT)
+========================= */
+QWidget {
+  background-color: #f5f7fb;
+  color: #0f172a;
+  font-family: "Segoe UI";
+  font-size: 13px;
+}
+
+QMainWindow {
+  background-color: #f5f7fb;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+#navPanel {
+  background: qlineargradient(
+    x1:0, y1:0, x2:0, y2:1,
+    stop:0 #ffffff,
+    stop:1 #eef2f7
+  );
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+#logoBadge {
+  background: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 #2563eb,
+    stop:1 #38bdf8
+  );
+  border-radius: 14px;
+}
+
+#logoGlyph {
+  color: white;
+  font-weight: 700;
+}
+
+#appName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+#navItem {
+  text-align: left;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: transparent;
+  color: #334155;
+  border: 1px solid transparent;
+}
+
+#navItem:hover {
+  background-color: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+#navItem[active="true"] {
+  background: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 rgba(59, 130, 246, 0.2),
+    stop:1 rgba(56, 189, 248, 0.12)
+  );
+  color: #1d4ed8;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+#themeButton {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #1d4ed8;
+}
+
+#navMeta {
+  color: #64748b;
+  font-size: 12px;
+}
+
+#navMetaMuted {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+#pageTitle {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+#pageSubtitle {
+  color: #64748b;
+  font-size: 13px;
+}
+
+#sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#sectionSubtitle,
+#cardSubtitle {
+  color: #64748b;
+  font-size: 12px;
+}
+
+#cardTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#tileTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#tileSubtitle {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+#primaryButton {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background-color: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 #2563eb,
+    stop:1 #38bdf8
+  );
+  color: white;
+  font-weight: 600;
+  border: none;
+}
+
+#ghostButton {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background-color: transparent;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+
+/* =========================
+   CARDS
+========================= */
+#kpiCard,
+#sectionCard,
+#uploadCard,
+#infoCard,
+#chartTile,
+#historyCard,
+#glassCard {
+  background-color: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+#kpiIcon,
+#uploadIcon,
+#infoIcon,
+#tileIcon,
+#historyIcon {
+  border-radius: 12px;
+  background-color: rgba(59, 130, 246, 0.18);
+}
+
+#kpiIcon[variant="blue"] { background-color: rgba(37, 99, 235, 0.25); }
+#kpiIcon[variant="purple"] { background-color: rgba(168, 85, 247, 0.25); }
+#kpiIcon[variant="orange"] { background-color: rgba(249, 115, 22, 0.25); }
+#kpiIcon[variant="green"] { background-color: rgba(16, 185, 129, 0.25); }
+
+#kpiLabel {
+  color: #64748b;
+  font-size: 12px;
+}
+
+#kpiValue {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+#kpiDelta[trend="up"] { color: #16a34a; }
+#kpiDelta[trend="down"] { color: #dc2626; }
+
+#chartArea {
+  background-color: #f1f5f9;
+  border-radius: 14px;
+  border: 1px dashed rgba(15, 23, 42, 0.1);
+}
+
+/* =========================
+   TABLES
+========================= */
+#tableContainer {
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+#tableHeader {
+  background-color: rgba(15, 23, 42, 0.04);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+#tableHeaderText {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#tableRow {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+#tableCell {
+  color: #1f2937;
+  font-size: 12px;
+}
+
+#statusPill[state="success"] {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #047857;
+}
+
+#statusPill[state="warning"] {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #b45309;
+}
+
+/* =========================
+   UPLOAD
+========================= */
+#uploadDrop {
+  border-radius: 16px;
+  border: 1px dashed rgba(15, 23, 42, 0.12);
+  background-color: #f8fafc;
+}
+
+/* =========================
+   HISTORY
+========================= */
+#historyItem {
+  background-color: #f8fafc;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+#historySubtitle {
+  color: #64748b;
+  font-size: 12px;
+}
+
+#historyMeta {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* =========================
+   INPUTS
+========================= */
+QLineEdit {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+QLineEdit:focus {
+  border: 1px solid rgba(59, 130, 246, 0.7);
+}
+
+/* =========================
+   ERROR
+========================= */
+#errorText {
+  color: #dc2626;
+  font-size: 12px;
+}

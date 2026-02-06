@@ -1,8 +1,11 @@
+from pathlib import Path
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHBoxLayout, QMainWindow, QStackedWidget, QWidget
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QStackedWidget, QWidget
 
 from screens.charts import ChartsScreen
 from screens.dashboard import DashboardScreen
+from screens.history import HistoryScreen
 from screens.login import LoginScreen
 from screens.upload import UploadScreen
 from widgets.nav import NavWidget
@@ -13,6 +16,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("ChemViz Desktop")
         self.resize(1200, 720)
+        self.current_theme = "dark"
 
         self.root_stack = QStackedWidget()
         self.setCentralWidget(self.root_stack)
@@ -23,6 +27,7 @@ class MainWindow(QMainWindow):
         self.dashboard_screen = DashboardScreen()
         self.upload_screen = UploadScreen()
         self.charts_screen = ChartsScreen()
+        self.history_screen = HistoryScreen()
 
         self.app_shell = self._build_shell()
 
@@ -38,11 +43,13 @@ class MainWindow(QMainWindow):
 
         self.nav = NavWidget()
         self.nav.route_changed.connect(self._on_route_change)
+        self.nav.theme_toggled.connect(self.toggle_theme)
 
         self.content_stack = QStackedWidget()
         self.content_stack.addWidget(self.dashboard_screen)
         self.content_stack.addWidget(self.upload_screen)
         self.content_stack.addWidget(self.charts_screen)
+        self.content_stack.addWidget(self.history_screen)
 
         layout.addWidget(self.nav)
         layout.addWidget(self.content_stack, stretch=1)
@@ -61,3 +68,23 @@ class MainWindow(QMainWindow):
             self.content_stack.setCurrentWidget(self.upload_screen)
         elif route == "charts":
             self.content_stack.setCurrentWidget(self.charts_screen)
+        elif route == "history":
+            self.content_stack.setCurrentWidget(self.history_screen)
+
+        self.nav.set_active(route)
+
+    def apply_theme(self, theme: str) -> None:
+        base_dir = Path(__file__).resolve().parent.parent / "assets"
+        styles_path = base_dir / (
+            "styles.qss" if theme == "dark" else "styles-light.qss"
+        )
+        if styles_path.exists():
+            app = QApplication.instance()
+            if app:
+                app.setStyleSheet(styles_path.read_text(encoding="utf-8"))
+            self.current_theme = theme
+            self.nav.set_theme_label(theme)
+
+    def toggle_theme(self) -> None:
+        next_theme = "light" if self.current_theme == "dark" else "dark"
+        self.apply_theme(next_theme)

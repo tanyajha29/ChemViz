@@ -3,9 +3,10 @@ from PyQt5.QtWidgets import (
     QFileDialog,
     QFrame,
     QLabel,
-    QLineEdit,
     QPushButton,
     QVBoxLayout,
+    QHBoxLayout,
+    QGridLayout,
     QWidget,
 )
 
@@ -16,51 +17,58 @@ class UploadScreen(QWidget):
     def __init__(self) -> None:
         super().__init__()
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 16, 16, 16)
-        layout.setSpacing(16)
+        layout.setContentsMargins(32, 32, 32, 32)
+        layout.setSpacing(26)
 
         header = QLabel("Upload CSV")
         header.setObjectName("pageTitle")
-        sub = QLabel("Upload datasets to generate analytics and reports.")
+        sub = QLabel("Import equipment data for analysis.")
         sub.setObjectName("pageSubtitle")
 
         layout.addWidget(header)
         layout.addWidget(sub)
 
         upload_card = QFrame()
-        upload_card.setObjectName("glassCard")
+        upload_card.setObjectName("uploadCard")
         card_layout = QVBoxLayout(upload_card)
-        card_layout.setContentsMargins(20, 20, 20, 20)
-        card_layout.setSpacing(14)
-
-        self.name_input = QLineEdit()
-        self.name_input.setPlaceholderText("Dataset name (optional)")
+        card_layout.setContentsMargins(26, 26, 26, 26)
+        card_layout.setSpacing(16)
 
         drop_zone = QFrame()
-        drop_zone.setObjectName("dropZone")
+        drop_zone.setObjectName("uploadDrop")
         drop_layout = QVBoxLayout(drop_zone)
-        drop_layout.setContentsMargins(16, 16, 16, 16)
-        drop_layout.setSpacing(10)
+        drop_layout.setContentsMargins(24, 24, 24, 24)
+        drop_layout.setSpacing(12)
 
-        hint = QLabel("Drop CSV here or click Browse")
+        icon = QFrame()
+        icon.setObjectName("uploadIcon")
+        icon.setFixedSize(56, 56)
+
+        hint = QLabel("Drag and drop your CSV file here")
         hint.setObjectName("cardTitle")
         hint.setAlignment(Qt.AlignCenter)
 
-        sub = QLabel("Required columns: Equipment Name, Type, Flowrate, Pressure, Temperature")
-        sub.setObjectName("cardSubtitle")
-        sub.setWordWrap(True)
-        sub.setAlignment(Qt.AlignCenter)
+        sub_hint = QLabel("or click to browse from your computer")
+        sub_hint.setObjectName("cardSubtitle")
+        sub_hint.setAlignment(Qt.AlignCenter)
 
-        browse = QPushButton("Browse CSV")
+        browse = QPushButton("Select File")
         browse.setObjectName("primaryButton")
         browse.clicked.connect(self._browse_file)
 
+        format_hint = QLabel("Supported format: CSV - Max file size: 100MB")
+        format_hint.setObjectName("cardSubtitle")
+        format_hint.setAlignment(Qt.AlignCenter)
+
+        drop_layout.addWidget(icon, alignment=Qt.AlignCenter)
         drop_layout.addWidget(hint)
-        drop_layout.addWidget(sub)
-        drop_layout.addWidget(browse)
+        drop_layout.addWidget(sub_hint)
+        drop_layout.addWidget(browse, alignment=Qt.AlignCenter)
+        drop_layout.addWidget(format_hint)
 
         self.file_label = QLabel("No file selected.")
         self.file_label.setObjectName("cardSubtitle")
+        self.file_label.setAlignment(Qt.AlignCenter)
 
         self.upload_button = QPushButton("Upload")
         self.upload_button.setObjectName("primaryButton")
@@ -68,23 +76,57 @@ class UploadScreen(QWidget):
 
         self.status_label = QLabel("")
         self.status_label.setObjectName("cardSubtitle")
+        self.status_label.setAlignment(Qt.AlignCenter)
 
-        checklist = QLabel(
-            "Checklist:\n"
-            "• Validate Flowrate, Pressure, Temperature values\n"
-            "• Uploads stored: last 5 per user"
-        )
-        checklist.setObjectName("cardSubtitle")
-        checklist.setWordWrap(True)
-
-        card_layout.addWidget(self.name_input)
         card_layout.addWidget(drop_zone)
         card_layout.addWidget(self.file_label)
-        card_layout.addWidget(self.upload_button)
+        card_layout.addWidget(self.upload_button, alignment=Qt.AlignCenter)
         card_layout.addWidget(self.status_label)
-        card_layout.addWidget(checklist)
 
         layout.addWidget(upload_card)
+
+        info_grid = QGridLayout()
+        info_grid.setSpacing(18)
+
+        info_cards = [
+            ("Required Columns", ["Equipment Name", "Type", "Flowrate", "Pressure", "Temperature"]),
+            ("Data Format", ["ISO 8601 timestamps", "Numeric values only", "UTF-8 encoding"]),
+            ("Best Practices", ["Validate data first", "Check for duplicates", "Use consistent units"]),
+        ]
+
+        for idx, (title, items) in enumerate(info_cards):
+            card = QFrame()
+            card.setObjectName("infoCard")
+            card_layout = QVBoxLayout(card)
+            card_layout.setContentsMargins(20, 20, 20, 20)
+            card_layout.setSpacing(10)
+
+            header_row = QHBoxLayout()
+            header_row.setSpacing(10)
+
+            icon = QFrame()
+            icon.setObjectName("infoIcon")
+            icon.setFixedSize(36, 36)
+
+            header_label = QLabel(title)
+            header_label.setObjectName("cardTitle")
+
+            header_row.addWidget(icon)
+            header_row.addWidget(header_label)
+            header_row.addStretch()
+
+            card_layout.addLayout(header_row)
+
+            for item in items:
+                line = QLabel(f"- {item}")
+                line.setObjectName("cardSubtitle")
+                card_layout.addWidget(line)
+
+            row = idx // 3
+            col = idx % 3
+            info_grid.addWidget(card, row, col)
+
+        layout.addLayout(info_grid)
         layout.addStretch()
 
         self.file_path = ""
@@ -96,6 +138,7 @@ class UploadScreen(QWidget):
         if path:
             self.file_path = path
             self.file_label.setText(path)
+            self.status_label.setText("")
 
     def _upload_file(self) -> None:
         if not self.file_path:
@@ -103,7 +146,7 @@ class UploadScreen(QWidget):
             return
         self.status_label.setText("Uploading...")
         try:
-            client.upload_csv(self.file_path, self.name_input.text().strip())
+            client.upload_csv(self.file_path, "")
             self.status_label.setText("Upload complete.")
         except Exception:
             self.status_label.setText("Upload failed. Check the CSV and try again.")
