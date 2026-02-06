@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiGrid, FiUploadCloud, FiClock, FiLogIn, FiUserPlus } from 'react-icons/fi';
+import { FiClock, FiGrid, FiHome, FiLogIn, FiUploadCloud, FiUserPlus } from 'react-icons/fi';
 
 const navItems = [
   { path: '/', label: 'Home', icon: <FiHome /> },
@@ -15,6 +15,7 @@ export default function Navbar() {
         <img src="/logo.gif" alt="ChemViz logo" className="nav-logo" />
         <span className="nav-title">ChemViz</span>
       </div>
+
       <nav className="nav-links">
         {navItems.map((item) => (
           <NavLink
@@ -29,6 +30,7 @@ export default function Navbar() {
           </NavLink>
         ))}
       </nav>
+
       <div className="nav-actions">
         <NavLink to="/login" className="nav-link">
           <span className="nav-icon">

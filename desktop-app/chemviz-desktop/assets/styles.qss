@@ -1,40 +1,52 @@
 QWidget {
-  background-color: #0b0f1a;
+  background-color: #0b0f16;
   color: #e5e7eb;
   font-family: "Segoe UI";
   font-size: 13px;
 }
 
 QMainWindow {
-  background-color: #0b0f1a;
+  background-color: #0b0f16;
 }
 
 #navPanel {
   background-color: #0f172a;
-  border-radius: 14px;
+  border-radius: 10px;
 }
 
 #navButton {
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 8px;
   text-align: left;
+  background-color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#navButton:hover {
   background-color: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 #navButton[active="true"] {
-  background-color: #1f2937;
-  border: 1px solid rgba(124, 58, 237, 0.5);
+  background-color: #111827;
+  border: 1px solid rgba(59, 130, 246, 0.6);
+  padding-left: 9px;
+  border-left: 3px solid #3b82f6;
 }
 
 #glassCard {
-  background-color: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
+  background-color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+#kpiCard {
+  background-color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
 }
 
 #pageTitle {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
 }
 
@@ -43,7 +55,7 @@ QMainWindow {
 }
 
 #cardTitle {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -53,22 +65,64 @@ QMainWindow {
 
 #cardLabel {
   color: #9ca3af;
+  font-size: 12px;
 }
 
 #cardValue {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+#kpiLabel {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+#kpiValue {
+  color: #e5e7eb;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 #primaryButton {
   padding: 10px 14px;
-  border-radius: 10px;
-  background-color: #4f46e5;
+  border-radius: 8px;
+  background-color: #3b82f6;
   color: white;
   font-weight: 600;
   border: none;
 }
 
+#primaryButton:hover {
+  background-color: #2563eb;
+}
+
+QLineEdit {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+QLineEdit:focus {
+  border: 1px solid rgba(59, 130, 246, 0.8);
+}
+
 #errorText {
   color: #f87171;
+}
+
+#sectionHeader {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#dropZone {
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background-color: #0b0f16;
 }

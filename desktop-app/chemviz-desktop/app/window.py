@@ -33,8 +33,8 @@ class MainWindow(QMainWindow):
     def _build_shell(self) -> QWidget:
         shell = QWidget()
         layout = QHBoxLayout(shell)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(16)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(20)
 
         self.nav = NavWidget()
         self.nav.route_changed.connect(self._on_route_change)

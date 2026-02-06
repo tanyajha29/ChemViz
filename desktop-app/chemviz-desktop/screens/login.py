@@ -27,10 +27,10 @@ class LoginScreen(QWidget):
         card_layout.setContentsMargins(24, 24, 24, 24)
         card_layout.setSpacing(12)
 
-        title = QLabel("ChemViz Login")
+        title = QLabel("Welcome back")
         title.setObjectName("cardTitle")
 
-        subtitle = QLabel("Sign in to access your equipment analytics.")
+        subtitle = QLabel("Sign in to access your analytics.")
         subtitle.setObjectName("cardSubtitle")
         subtitle.setWordWrap(True)
 

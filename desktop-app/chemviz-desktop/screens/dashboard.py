@@ -7,8 +7,8 @@ class DashboardScreen(QWidget):
     def __init__(self) -> None:
         super().__init__()
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 16, 16, 16)
-        layout.setSpacing(16)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(18)
 
         header = QLabel("Dashboard")
         header.setObjectName("pageTitle")
@@ -19,7 +19,7 @@ class DashboardScreen(QWidget):
         layout.addWidget(sub)
 
         summary_grid = QGridLayout()
-        summary_grid.setSpacing(12)
+        summary_grid.setSpacing(16)
         self.summary_cards = {}
         labels = [
             "Total Equipment",
@@ -37,11 +37,17 @@ class DashboardScreen(QWidget):
         chart_card = QFrame()
         chart_card.setObjectName("glassCard")
         chart_layout = QVBoxLayout(chart_card)
+        chart_header = QLabel("Equipment Trends")
+        chart_header.setObjectName("sectionHeader")
+        chart_layout.addWidget(chart_header)
         chart_layout.addWidget(QLabel("Charts (Chart area placeholder)"))
 
         table_card = QFrame()
         table_card.setObjectName("glassCard")
         table_layout = QVBoxLayout(table_card)
+        table_header = QLabel("Recent Uploads")
+        table_header.setObjectName("sectionHeader")
+        table_layout.addWidget(table_header)
         table_layout.addWidget(QLabel("Latest uploads table (placeholder)"))
 
         layout.addWidget(chart_card)
@@ -69,15 +75,15 @@ class DashboardScreen(QWidget):
 
     def _summary_card(self, label: str, value: str) -> tuple[QFrame, QLabel]:
         card = QFrame()
-        card.setObjectName("glassCard")
+        card.setObjectName("kpiCard")
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(12, 12, 12, 12)
         card_layout.setSpacing(6)
 
         label_widget = QLabel(label)
-        label_widget.setObjectName("cardLabel")
+        label_widget.setObjectName("kpiLabel")
         value_widget = QLabel(value)
-        value_widget.setObjectName("cardValue")
+        value_widget.setObjectName("kpiValue")
 
         card_layout.addWidget(label_widget)
         card_layout.addWidget(value_widget)

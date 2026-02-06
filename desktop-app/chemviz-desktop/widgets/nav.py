@@ -8,7 +8,7 @@ class NavWidget(QFrame):
     def __init__(self) -> None:
         super().__init__()
         self.setObjectName("navPanel")
-        self.setFixedWidth(200)
+        self.setFixedWidth(180)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 20, 16, 20)

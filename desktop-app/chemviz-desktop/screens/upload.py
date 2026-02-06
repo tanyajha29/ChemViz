@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QFileDialog,
     QFrame,
@@ -29,17 +30,34 @@ class UploadScreen(QWidget):
         upload_card = QFrame()
         upload_card.setObjectName("glassCard")
         card_layout = QVBoxLayout(upload_card)
-        card_layout.setContentsMargins(16, 16, 16, 16)
-        card_layout.setSpacing(12)
+        card_layout.setContentsMargins(20, 20, 20, 20)
+        card_layout.setSpacing(14)
 
         self.name_input = QLineEdit()
         self.name_input.setPlaceholderText("Dataset name (optional)")
 
-        hint = QLabel("Drag & drop a CSV file here or click to browse.")
-        hint.setObjectName("cardLabel")
+        drop_zone = QFrame()
+        drop_zone.setObjectName("dropZone")
+        drop_layout = QVBoxLayout(drop_zone)
+        drop_layout.setContentsMargins(16, 16, 16, 16)
+        drop_layout.setSpacing(10)
+
+        hint = QLabel("Drop CSV here or click Browse")
+        hint.setObjectName("cardTitle")
+        hint.setAlignment(Qt.AlignCenter)
+
+        sub = QLabel("Required columns: Equipment Name, Type, Flowrate, Pressure, Temperature")
+        sub.setObjectName("cardSubtitle")
+        sub.setWordWrap(True)
+        sub.setAlignment(Qt.AlignCenter)
+
         browse = QPushButton("Browse CSV")
         browse.setObjectName("primaryButton")
         browse.clicked.connect(self._browse_file)
+
+        drop_layout.addWidget(hint)
+        drop_layout.addWidget(sub)
+        drop_layout.addWidget(browse)
 
         self.file_label = QLabel("No file selected.")
         self.file_label.setObjectName("cardSubtitle")
@@ -53,14 +71,14 @@ class UploadScreen(QWidget):
 
         checklist = QLabel(
             "Checklist:\n"
-            "• Required columns: Equipment Name, Type, Flowrate, Pressure, Temperature\n"
+            "• Validate Flowrate, Pressure, Temperature values\n"
             "• Uploads stored: last 5 per user"
         )
         checklist.setObjectName("cardSubtitle")
+        checklist.setWordWrap(True)
 
         card_layout.addWidget(self.name_input)
-        card_layout.addWidget(hint)
-        card_layout.addWidget(browse)
+        card_layout.addWidget(drop_zone)
         card_layout.addWidget(self.file_label)
         card_layout.addWidget(self.upload_button)
         card_layout.addWidget(self.status_label)
