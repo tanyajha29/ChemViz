@@ -5,6 +5,12 @@ type TokenResponse = {
   token: string;
 };
 
+export type ProfileResponse = {
+  id: number;
+  username: string;
+  email: string;
+};
+
 export async function login(username: string, password: string) {
   const response = await api.post<TokenResponse>('/api/auth/token/', {
     username,
@@ -30,4 +36,9 @@ export async function registerUser(
 
 export function logout() {
   clearAuthToken();
+}
+
+export async function fetchProfile() {
+  const response = await api.get<ProfileResponse>('/api/auth/me/');
+  return response.data;
 }

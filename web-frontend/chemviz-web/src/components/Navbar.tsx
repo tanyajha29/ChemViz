@@ -1,12 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { FiClock, FiGrid, FiHome, FiLogIn, FiUploadCloud, FiUser, FiUserPlus } from 'react-icons/fi';
+import { FiClock, FiGrid, FiHome, FiLogIn, FiUploadCloud, FiUserPlus } from 'react-icons/fi';
 
 const navItems = [
   { path: '/', label: 'Home', icon: <FiHome /> },
   { path: '/dashboard', label: 'Dashboard', icon: <FiGrid /> },
   { path: '/upload', label: 'Upload', icon: <FiUploadCloud /> },
   { path: '/history', label: 'History', icon: <FiClock /> },
-  { path: '/profile', label: 'Profile', icon: <FiUser /> },
 ];
 
 export default function Navbar() {

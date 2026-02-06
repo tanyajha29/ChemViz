@@ -1,17 +1,49 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiLogOut, FiUser } from 'react-icons/fi';
 
-import { logout } from '../api/auth';
+import { fetchProfile, logout, type ProfileResponse } from '../api/auth';
 import { getAuthToken } from '../api/token';
 
 export default function Profile() {
   const navigate = useNavigate();
   const token = getAuthToken();
+  const [profile, setProfile] = useState<ProfileResponse | null>(null);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!token) {
+      setProfile(null);
+      setStatus('idle');
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    setStatus('loading');
+    fetchProfile()
+      .then((data) => {
+        if (!isMounted) return;
+        setProfile(data);
+        setStatus('idle');
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setProfile(null);
+        setStatus('error');
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token]);
 
   return (
     <div className="page">
@@ -27,11 +59,22 @@ export default function Profile() {
 
       <section className="profile-card glass neon-glow">
         <div className="profile-row">
-          <span className="profile-label">Auth Token</span>
+          <span className="profile-label">Username</span>
           <span className="profile-value">
-            {token ? `${token.slice(0, 8)}…` : 'Not logged in'}
+            {profile?.username ?? (token ? 'Loading...' : 'Not logged in')}
           </span>
         </div>
+        <div className="profile-row">
+          <span className="profile-label">Email</span>
+          <span className="profile-value">
+            {profile?.email ?? (token ? 'Loading...' : 'Not logged in')}
+          </span>
+        </div>
+        {status === 'error' && (
+          <p className="error-text">
+            Unable to load profile details. Please sign in again.
+          </p>
+        )}
         <button type="button" className="nav-button" onClick={handleLogout}>
           <FiLogOut className="inline-icon" />
           Logout
