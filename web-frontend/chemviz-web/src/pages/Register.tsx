@@ -32,7 +32,7 @@ export default function Register() {
       <div className="bg-shape shape-1" />
       <div className="bg-shape shape-2" />
 
-      <div className="auth-card">
+      <div className="auth-card neon-glow">
         <div className="auth-header">
           <FiUserPlus className="auth-icon" />
           <h1>Create Account</h1>

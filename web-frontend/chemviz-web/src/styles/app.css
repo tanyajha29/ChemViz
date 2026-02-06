@@ -173,17 +173,69 @@ body::after {
 }
 
 /* ---------- HERO ---------- */
-.hero {
-  padding: 4rem;
+/* ---------- HOME (Auth Styled) ---------- */
+.home-wrapper {
+  flex-direction: column;
+  align-items: center;
+  padding: 6rem 6vw 4rem;
+  gap: 2.5rem;
+}
+
+.home-hero {
+  width: min(1100px, 100%);
+  padding: 3rem;
   text-align: center;
-  margin-bottom: 4rem;
+}
+
+.home-title {
+  margin: 0 0 0.5rem;
+  font-size: 3rem;
+  color: #ffffff;
+}
+
+.home-subtitle {
+  margin: 0 auto;
+  max-width: 680px;
+  color: #cbd5e1;
+  font-size: 1.05rem;
 }
 
 .hero-actions {
-  margin-top: 2.5rem;
+  margin-top: 2rem;
   display: flex;
-  gap: 1.5rem;
+  gap: 1.2rem;
   justify-content: center;
+  flex-wrap: wrap;
+}
+
+.home-grid {
+  width: min(1100px, 100%);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.6rem;
+}
+
+.home-card {
+  padding: 2rem;
+  text-align: center;
+}
+
+.home-card h3 {
+  margin: 0.6rem 0;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.home-card p {
+  margin: 0;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.home-cta {
+  width: min(900px, 100%);
+  padding: 2.5rem;
+  text-align: center;
 }
 
 /* ---------- TITLES ---------- */
@@ -278,20 +330,9 @@ body::after {
 }
 
 /* ---------- FEATURE GRID ---------- */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2rem;
-  margin-bottom: 4rem;
-}
-
-.feature-card {
-  padding: 2.5rem;
-  position: relative;
-}
-
+/* Feature styles reused in home cards */
 .feature-text {
-  color: var(--text-muted);
+  color: #cbd5e1;
   line-height: 1.6;
 }
 
@@ -301,159 +342,26 @@ body::after {
 }
 
 /* ---------- STATS ---------- */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  padding: 2rem;
-  margin-bottom: 4rem;
-}
-
-.stat-block {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 2.4rem;
-  font-weight: 800;
-  background: linear-gradient(90deg, #a78bfa, #60a5fa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.stat-label {
-  margin-top: 0.3rem;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
+/* Removed stats row to keep home aligned with auth layout */
 
 /* ---------- TIMELINE ---------- */
-.timeline {
-  padding: 3rem;
-  margin-bottom: 4rem;
-}
-
-.timeline-list {
-  list-style: none;
-  margin-top: 2rem;
-  padding: 0;
-}
-
-.timeline-list li {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.4rem;
-  color: var(--text-muted);
-}
-
-.workflow-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.6rem;
-  margin-top: 2rem;
-}
-
-.workflow-step {
-  padding: 1.4rem;
-  border-radius: 14px;
-  background: rgba(15, 32, 39, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.workflow-step h3 {
-  margin: 0 0 0.6rem;
-  font-size: 1rem;
-  color: var(--text-main);
-}
-
-.workflow-step p {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 0.92rem;
-  line-height: 1.5;
-}
-
+/* Workflow index reused in home cards */
 .workflow-index {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  margin: 0 auto 0.8rem;
-  font-size: 0.85rem;
-  letter-spacing: 0.2em;
+  margin: 0 auto 0.6rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
   color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(15, 32, 39, 0.6);
 }
 
 /* ---------- HOME SPLIT ---------- */
-.home-split {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 4rem;
-}
-
-.split-card {
-  padding: 2.5rem;
-  display: grid;
-  gap: 1.2rem;
-  text-align: center;
-}
-
-.split-highlights {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  justify-content: center;
-}
-
-.split-highlights span {
-  padding: 0.35rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(15, 32, 39, 0.6);
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.split-metrics {
-  display: flex;
-  justify-content: center;
-  gap: 1.4rem;
-}
-
-.split-metrics div {
-  display: grid;
-  gap: 0.2rem;
-}
-
-.split-metrics strong {
-  font-size: 1.4rem;
-  color: var(--text-main);
-}
-
-.split-metrics span {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.timeline-step {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    var(--accent-purple),
-    var(--accent-blue)
-  );
-  display: grid;
-  place-items: center;
-  color: white;
-  font-weight: 700;
-}
+/* Removed old home split/timeline blocks */
 
 /* ---------- AUTH ---------- */
 .auth-card {
