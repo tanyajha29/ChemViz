@@ -48,6 +48,7 @@ class MainWindow(QMainWindow):
         self.charts_screen = ChartsScreen()
         self.history_screen = HistoryScreen()
         self.profile_screen = ProfileScreen()
+        self.profile_screen.logout_requested.connect(self._on_logout)
 
         self.app_shell = self._build_shell()
 

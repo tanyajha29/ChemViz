@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QFrame,
-    QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMessageBox,
     QPushButton,
     QVBoxLayout,
     QWidget,
@@ -81,8 +81,16 @@ class LoginScreen(QWidget):
 
     def _handle_login(self) -> None:
         self.error_label.setText("")
+        username = self.username.text().strip()
+        password = self.password.text()
+
+        if not username or not password:
+            self.error_label.setText("Please enter username and password.")
+            return
+
         try:
-            client.login(self.username.text().strip(), self.password.text())
+            client.login(username, password)
+            QMessageBox.information(self, "Success", "Login successful.")
             self.login_success.emit()
         except Exception:
             self.error_label.setText("Login failed. Check credentials.")

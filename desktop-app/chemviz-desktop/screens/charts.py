@@ -52,14 +52,14 @@ class ChartsScreen(QWidget):
             "Equipment Type Distribution",
             "Counts per equipment category",
         )
-        self.type_canvas = self._chart_canvas()
+        self.type_canvas = self._chart_canvas(240)
         self.type_card.layout().addWidget(self.type_canvas)
 
         self.avg_card = self._build_chart_card(
             "Average Metrics",
             "Flowrate, Pressure, Temperature",
         )
-        self.avg_canvas = self._chart_canvas()
+        self.avg_canvas = self._chart_canvas(240)
         self.avg_card.layout().addWidget(self.avg_canvas)
 
         grid.addWidget(self.type_card, 0, 0)
@@ -86,7 +86,7 @@ class ChartsScreen(QWidget):
         toggle_row.addStretch()
 
         deep_layout.addLayout(toggle_row)
-        self.deep_canvas = self._chart_canvas()
+        self.deep_canvas = self._chart_canvas(280)
         deep_layout.addWidget(self.deep_canvas)
         layout.addWidget(self.deep_card)
 
@@ -94,7 +94,7 @@ class ChartsScreen(QWidget):
             "Pressure vs Temperature",
             "Scatter view of equipment metrics",
         )
-        self.scatter_canvas = self._chart_canvas()
+        self.scatter_canvas = self._chart_canvas(280)
         self.scatter_card.layout().addWidget(self.scatter_canvas)
         layout.addWidget(self.scatter_card)
         layout.addStretch()

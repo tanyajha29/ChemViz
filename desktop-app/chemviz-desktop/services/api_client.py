@@ -73,6 +73,15 @@ class ApiClient:
         return token
 
     def logout(self) -> None:
+        if self.token:
+            try:
+                requests.post(
+                    f"{self.base_url}/api/auth/logout/",
+                    headers=self._headers(),
+                    timeout=10,
+                )
+            except requests.RequestException:
+                pass
         self.token = None
         _clear_token()
 

@@ -390,6 +390,10 @@ QMainWindow {
   color: #e2e8f0;
 }
 
+#chartCanvas {
+  background: transparent;
+}
+
 #metricToggle {
   padding: 6px 12px;
   border-radius: 999px;

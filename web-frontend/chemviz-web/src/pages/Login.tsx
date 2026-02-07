@@ -8,15 +8,23 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
+    setSuccess('');
+    if (!username.trim() || !password) {
+      setError('Please enter both username and password.');
+      return;
+    }
     setLoading(true);
 
     try {
       await login(username, password);
+      setSuccess('Login successful.');
+      window.alert('Login successful.');
       navigate('/dashboard');
     } catch {
       setError('Invalid username or password');
@@ -63,6 +71,7 @@ export default function Login() {
           </div>
 
           {error && <p className="error-text">{error}</p>}
+          {success && <p className="success-text">{success}</p>}
 
           <button type="submit" disabled={loading}>
             {loading ? 'Signing in…' : 'Sign In'}

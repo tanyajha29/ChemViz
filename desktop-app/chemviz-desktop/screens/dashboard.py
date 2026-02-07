@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
     QScrollArea,
     QStyle,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -52,7 +53,7 @@ class DashboardScreen(QWidget):
             ("Datasets Stored", "", "blue", QStyle.SP_DirOpenIcon),
         ]
 
-        columns = 3
+        columns = 5
         for idx, (label, unit, variant, icon) in enumerate(cards):
             card, value_widget = self._summary_card(
                 label, unit, variant, icon
@@ -220,6 +221,8 @@ class DashboardScreen(QWidget):
     ) -> tuple[QFrame, QLabel]:
         card = QFrame()
         card.setObjectName("kpiCard")
+        card.setMinimumWidth(220)
+        card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         card_layout = QVBoxLayout(card)
         card_layout.setContentsMargins(18, 18, 18, 18)
         card_layout.setSpacing(8)

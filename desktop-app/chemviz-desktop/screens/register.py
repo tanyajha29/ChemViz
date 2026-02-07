@@ -1,8 +1,11 @@
+import re
+
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QFrame,
     QLabel,
     QLineEdit,
+    QMessageBox,
     QPushButton,
     QVBoxLayout,
     QWidget,
@@ -94,7 +97,15 @@ class RegisterScreen(QWidget):
         confirm = self.confirm.text()
 
         if not username or not email or not password:
-            self.error_label.setText("Please fill in all fields.")
+            self.error_label.setText("Username, email, and password are required.")
+            return
+
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+            self.error_label.setText("Enter a valid email address.")
+            return
+
+        if len(password) < 8 or not re.search(r"[A-Za-z]", password) or not re.search(r"\d", password):
+            self.error_label.setText("Password must be 8+ characters with letters and numbers.")
             return
 
         if password != confirm:
@@ -103,6 +114,7 @@ class RegisterScreen(QWidget):
 
         try:
             client.register(username, email, password)
+            QMessageBox.information(self, "Success", "Account created successfully.")
             self.register_success.emit()
         except Exception:
             self.error_label.setText("Registration failed. Try a different username.")

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiLogOut, FiUser, FiMail } from 'react-icons/fi';
+import { FiLogOut, FiMail, FiUser } from 'react-icons/fi';
 
 import { fetchProfile, logout, type ProfileResponse } from '../api/auth';
 import { getAuthToken } from '../api/token';
@@ -12,8 +12,8 @@ export default function Profile() {
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
@@ -56,18 +56,14 @@ export default function Profile() {
         alignItems: 'center',
       }}
     >
-      {/* Header */}
       <div className="page-header center-text">
         <h1 className="page-title">
           <FiUser className="inline-icon" />
           Profile
         </h1>
-        <p className="page-subtitle">
-          Manage your session and account access
-        </p>
+        <p className="page-subtitle">Manage your session and account access</p>
       </div>
 
-      {/* Centered Card Wrapper */}
       <div
         style={{
           flex: 1,
@@ -77,7 +73,6 @@ export default function Profile() {
           width: '100%',
         }}
       >
-        {/* Profile Card */}
         <section
           className="profile-card glass neon-glow fade-in fade-delay-1"
           style={{
@@ -85,7 +80,6 @@ export default function Profile() {
             maxWidth: 420,
           }}
         >
-          {/* Avatar */}
           <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
             <div
               style={{
@@ -107,14 +101,13 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* User Info */}
           <div className="profile-row">
             <span className="profile-label">
               <FiUser className="inline-icon" />
               Username
             </span>
             <span className="profile-value">
-              {profile?.username ?? (token ? 'Loading…' : 'Not logged in')}
+              {profile?.username ?? (token ? 'Loading...' : 'Not logged in')}
             </span>
           </div>
 
@@ -124,7 +117,25 @@ export default function Profile() {
               Email
             </span>
             <span className="profile-value">
-              {profile?.email ?? (token ? 'Loading…' : 'Not logged in')}
+              {profile?.email ?? (token ? 'Loading...' : 'Not logged in')}
+            </span>
+          </div>
+
+          <div className="profile-row">
+            <span className="profile-label">Role</span>
+            <span className="profile-value">
+              {profile?.role ?? (token ? 'Loading...' : 'Not logged in')}
+            </span>
+          </div>
+
+          <div className="profile-row">
+            <span className="profile-label">Last Login</span>
+            <span className="profile-value">
+              {profile?.last_login
+                ? new Date(profile.last_login).toLocaleString()
+                : token
+                  ? 'Not available'
+                  : 'Not logged in'}
             </span>
           </div>
 
@@ -134,7 +145,6 @@ export default function Profile() {
             </p>
           )}
 
-          {/* Logout */}
           <button
             type="button"
             className="nav-button"

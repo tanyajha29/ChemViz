@@ -1,9 +1,14 @@
-from PyQt5.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget
+from datetime import datetime
+
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from services.api_client import client
 
 
 class ProfileScreen(QWidget):
+    logout_requested = pyqtSignal()
+
     def __init__(self) -> None:
         super().__init__()
         layout = QVBoxLayout(self)
@@ -28,12 +33,23 @@ class ProfileScreen(QWidget):
         self.username_label.setObjectName("profileRow")
         self.email_label = QLabel("Email: --")
         self.email_label.setObjectName("profileRow")
+        self.role_label = QLabel("Role: --")
+        self.role_label.setObjectName("profileRow")
+        self.last_login_label = QLabel("Last Login: --")
+        self.last_login_label.setObjectName("profileRow")
         self.status_label = QLabel("")
         self.status_label.setObjectName("cardSubtitle")
 
         card_layout.addWidget(self.username_label)
         card_layout.addWidget(self.email_label)
+        card_layout.addWidget(self.role_label)
+        card_layout.addWidget(self.last_login_label)
         card_layout.addWidget(self.status_label)
+
+        self.logout_button = QPushButton("Logout")
+        self.logout_button.setObjectName("logoutButton")
+        self.logout_button.clicked.connect(self.logout_requested.emit)
+        card_layout.addWidget(self.logout_button)
 
         layout.addWidget(self.card)
         layout.addStretch()
@@ -43,8 +59,21 @@ class ProfileScreen(QWidget):
             profile = client.fetch_profile()
             username = profile.get("username", "--")
             email = profile.get("email", "--")
+            role = profile.get("role", "--")
+            last_login = self._format_datetime(profile.get("last_login"))
             self.username_label.setText(f"Username: {username}")
             self.email_label.setText(f"Email: {email}")
+            self.role_label.setText(f"Role: {role}")
+            self.last_login_label.setText(f"Last Login: {last_login}")
             self.status_label.setText("")
         except Exception:
             self.status_label.setText("Unable to load profile.")
+
+    def _format_datetime(self, value: str | None) -> str:
+        if not value:
+            return "--"
+        try:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return dt.strftime("%Y-%m-%d %H:%M")
+        except ValueError:
+            return value

@@ -59,7 +59,7 @@ body::after {
 /* ---------- PAGE ---------- */
 .page {
   min-height: 100vh;
-  padding: 4rem 10vw;
+  padding: 2rem 10vw 4rem;
 }
 
 /* ---------- NAVBAR ---------- */
@@ -549,6 +549,7 @@ body::after {
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #ffffff;
+  margin-top: 0;
 }
 
 .page-subtitle {
@@ -845,7 +846,7 @@ body::after {
 ================================ */
 
 .page-header {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 /* ===============================

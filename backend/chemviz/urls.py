@@ -16,6 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from api.datasets.views import (
+    DatasetLatestReportView,
+    DatasetSummaryListView,
+    DatasetUploadView,
+)
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
@@ -23,4 +28,8 @@ urlpatterns = [
 
     path('api/auth/', include('api.core.urls')),
     path('api/datasets/', include('api.datasets.urls')),
+    path('api/upload/', DatasetUploadView.as_view(), name='api-upload'),
+    path('api/summary/', DatasetSummaryListView.as_view(), name='api-summary'),
+    path('api/history/', DatasetSummaryListView.as_view(), name='api-history'),
+    path('api/report/pdf/', DatasetLatestReportView.as_view(), name='api-report'),
 ]

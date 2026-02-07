@@ -9,6 +9,8 @@ export type ProfileResponse = {
   id: number;
   username: string;
   email: string;
+  role: string;
+  last_login: string | null;
 };
 
 export async function login(username: string, password: string) {
@@ -34,8 +36,12 @@ export async function registerUser(
   return response.data.token;
 }
 
-export function logout() {
-  clearAuthToken();
+export async function logout() {
+  try {
+    await api.post('/api/auth/logout/');
+  } finally {
+    clearAuthToken();
+  }
 }
 
 export async function fetchProfile() {
