@@ -8,6 +8,10 @@ QWidget {
   font-size: 15px;
 }
 
+QLabel {
+  background-color: transparent;
+}
+
 QMainWindow {
   background-color: #f5f7fb;
 }

@@ -27,6 +27,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("ChemViz Desktop")
         self.resize(1360, 820)
+        self.showMaximized()
         self.current_theme = "dark"
 
         self.root_stack = QStackedWidget()
