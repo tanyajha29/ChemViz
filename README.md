@@ -1,40 +1,42 @@
-# ChemViz — Chemical Equipment Parameter Visualizer
+# ChemViz - Chemical Equipment Parameter Visualizer
 
-ChemViz is a hybrid **Web + Desktop** application for uploading chemical equipment datasets, calculating analytics, and visualizing results.  
-The project includes a Django REST backend, a React + Chart.js web frontend, and a PyQt5 + Matplotlib desktop app.
+ChemViz is a hybrid Web + Desktop application for uploading chemical equipment datasets,
+calculating analytics, and visualizing results. It includes a Django REST backend, a
+React + Chart.js web frontend, and a PyQt5 + Matplotlib desktop app.
 
-**Core Features**
-1. CSV upload with schema validation
+## Highlights
+1. CSV upload with schema and data validation
 2. Summary analytics (count, averages, type distribution)
-3. Chart visualizations (web + desktop)
+3. Charts on both web and desktop
 4. Last 5 uploads stored per user
 5. PDF report generation
 6. Token-based authentication
 
----
+## Architecture
+CSV -> Django REST API -> Analytics (Pandas) -> Web (React) / Desktop (PyQt5)
 
-**Project Structure**
+## Tech Stack
+1. Backend: Django, DRF, Pandas, SQLite
+2. Web: React, Chart.js
+3. Desktop: PyQt5, Matplotlib
+
+## Project Structure
 ```
 ChemViz/
-├── backend/                # Django + DRF + Pandas
-├── web-frontend/           # React + Chart.js
-├── desktop-app/            # PyQt5 + Matplotlib
-├── sample_data/            # Sample CSVs
-├── requirements.txt        # Combined Python deps (backend + desktop)
-└── README.md
+|-- backend/                # Django + DRF + Pandas
+|-- web-frontend/           # React + Chart.js
+|-- desktop-app/            # PyQt5 + Matplotlib
+|-- sample_data/            # Sample CSVs
+|-- requirements.txt        # Combined Python deps (backend + desktop)
+`-- README.md
 ```
 
----
-
-**Prerequisites**
+## Prerequisites
 1. Python 3.11+ (recommended)
 2. Node.js 18+ and npm
 3. Git
 
----
-
-**Backend Setup (Django + DRF)**
-
+## Backend Setup (Django + DRF)
 1. Create and activate a virtual environment:
 ```powershell
 python -m venv backend\.venv
@@ -44,7 +46,7 @@ backend\.venv\Scripts\Activate.ps1
 2. Install dependencies:
 ```powershell
 python -m pip install --upgrade pip
-python -m pip install -r backend\requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 3. Run migrations:
@@ -52,7 +54,7 @@ python -m pip install -r backend\requirements.txt
 python backend\manage.py migrate
 ```
 
-4. Create a superuser:
+4. Create a superuser (optional, for admin):
 ```powershell
 python backend\manage.py createsuperuser
 ```
@@ -67,10 +69,7 @@ Backend runs at:
 http://127.0.0.1:8000
 ```
 
----
-
-**Web Frontend Setup (React + Chart.js)**
-
+## Web Frontend Setup (React + Chart.js)
 1. Install dependencies:
 ```powershell
 cd web-frontend\chemviz-web
@@ -87,16 +86,13 @@ Frontend runs at:
 http://localhost:5173
 ```
 
-Optional: set API base URL in `.env`:
+Optional API base URL (create `.env` inside `web-frontend/chemviz-web`):
 ```
 VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
 
----
-
-**Desktop App Setup (PyQt5 + Matplotlib)**
-
-1. Install desktop requirements:
+## Desktop App Setup (PyQt5 + Matplotlib)
+1. Install desktop requirements (if not using combined requirements.txt):
 ```powershell
 python -m pip install -r desktop-app\chemviz-desktop\requirements.txt
 ```
@@ -107,93 +103,95 @@ cd desktop-app\chemviz-desktop
 python main.py
 ```
 
----
+## Build Desktop Executable (PyInstaller)
+From `desktop-app/chemviz-desktop`:
+```powershell
+pyinstaller --noconsole --onefile --name ChemVizDesktop --add-data "assets;assets" main.py
+```
 
-**Authentication Flow**
+The executable will be created at:
+```
+desktop-app/chemviz-desktop/dist/ChemVizDesktop.exe
+```
 
-1. Get a token:
+## Authentication
+Login:
 ```
 POST /api/auth/token/
 {
-  "username": "your_user",
-  "password": "your_pass"
+  "username": "email_or_username",
+  "password": "your_password"
 }
 ```
 
-2. Use token in requests:
+Register:
+```
+POST /api/auth/register/
+{
+  "full_name": "Your Name",
+  "email": "name@domain.com",
+  "password": "StrongPass1",
+  "confirm_password": "StrongPass1"
+}
+```
+
+Use the token:
 ```
 Authorization: Token <token>
 ```
 
-Web and desktop clients store and reuse the token automatically.
+## Key API Endpoints
+1. POST /api/auth/register/ - register
+2. POST /api/auth/token/ - login
+3. POST /api/auth/logout/ - logout
+4. GET  /api/auth/me/ - profile
+5. POST /api/upload/ - upload CSV
+6. GET  /api/summary/ - last 5 summaries (per user)
+7. GET  /api/history/ - alias for summaries
+8. GET  /api/datasets/latest/ - latest rows
+9. GET  /api/report/pdf/ - latest PDF report
 
----
-
-**Key API Endpoints**
-1. `POST /api/auth/token/` → login
-2. `POST /api/auth/register/` → register
-3. `POST /api/datasets/upload/` → upload CSV
-4. `GET /api/datasets/summaries/` → last 5 summaries (per user)
-5. `GET /api/datasets/report/<id>/` → PDF report
-
----
-
-**CSV Format (Required Columns)**
+## CSV Requirements
+Required columns:
 ```
 Equipment Name, Type, Flowrate, Pressure, Temperature
 ```
+
+Validation rules:
+1. File type: .csv
+2. Max size: 5 MB
+3. Max rows: 10,000
+4. Flowrate >= 0
+5. Pressure >= 0
+6. Temperature between -50 and 500
 
 Sample file:
 ```
 sample_data/sample_equipment_data.csv
 ```
 
----
+## Notes
+1. Each user sees only their own uploads.
+2. Only the latest 5 uploads are stored per user.
 
-**Running Both Frontend + Backend**
+## Troubleshooting
+1. ModuleNotFoundError: pandas
+   - Run: `python -m pip install -r requirements.txt`
 
-1. Start backend:
-```powershell
-python backend\manage.py runserver
-```
-
-2. Start frontend:
-```powershell
-cd web-frontend\chemviz-web
-npm run dev
-```
-
----
-
-**Troubleshooting**
-
-1. `ModuleNotFoundError: pandas`
-   - Run: `python -m pip install -r backend\requirements.txt`
-
-2. `401 Unauthorized`
+2. 401 Unauthorized
    - You are not logged in or token is missing.
 
-3. `no such table: datasets_datasetupload`
-   - Run migrations: `python backend\manage.py migrate`
+3. no such table: datasets_datasetupload
+   - Run: `python backend\manage.py migrate`
 
 4. Frontend shows no data
-   - Upload a CSV first or verify token is stored.
+   - Upload a CSV first or verify the token is stored.
 
----
-
-**Notes**
-1. Each user sees **only their own uploads**.
-2. Only the **latest 5 uploads** are stored per user.
-
----
-
-**Submission Checklist**
+## Submission Checklist
 1. Source code on GitHub
 2. README with setup instructions
-3. Demo video (2–3 minutes)
+3. Demo video (2-3 minutes)
 4. Optional deployment link
 
----
-
-**License**
-MIT (or update if required)
+## License
+MIT (update if required)

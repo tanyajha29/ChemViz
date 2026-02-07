@@ -1,5 +1,6 @@
 import re
 
+import requests
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QFrame,
@@ -50,8 +51,8 @@ class RegisterScreen(QWidget):
         subtitle.setAlignment(Qt.AlignCenter)
         subtitle.setWordWrap(True)
 
-        self.username = QLineEdit()
-        self.username.setPlaceholderText("Username")
+        self.full_name = QLineEdit()
+        self.full_name.setPlaceholderText("Full Name")
 
         self.email = QLineEdit()
         self.email.setPlaceholderText("Email")
@@ -78,7 +79,7 @@ class RegisterScreen(QWidget):
         card_layout.addWidget(logo, alignment=Qt.AlignCenter)
         card_layout.addWidget(title)
         card_layout.addWidget(subtitle)
-        card_layout.addWidget(self.username)
+        card_layout.addWidget(self.full_name)
         card_layout.addWidget(self.email)
         card_layout.addWidget(self.password)
         card_layout.addWidget(self.confirm)
@@ -91,21 +92,45 @@ class RegisterScreen(QWidget):
 
     def _handle_register(self) -> None:
         self.error_label.setText("")
-        username = self.username.text().strip()
-        email = self.email.text().strip()
-        password = self.password.text()
-        confirm = self.confirm.text()
+        full_name = self.full_name.text().strip()
+        email = self.email.text().strip().lower()
+        password = self.password.text().strip()
+        confirm = self.confirm.text().strip()
 
-        if not username or not email or not password:
-            self.error_label.setText("Username, email, and password are required.")
+        if not full_name or not email or not password:
+            self.error_label.setText("Full name, email, and password are required.")
+            return
+
+        if len(full_name) < 2 or not re.fullmatch(r"[A-Za-z ]+", full_name):
+            self.error_label.setText("Full name must be 2+ characters (letters and spaces).")
             return
 
         if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
             self.error_label.setText("Enter a valid email address.")
             return
 
-        if len(password) < 8 or not re.search(r"[A-Za-z]", password) or not re.search(r"\d", password):
-            self.error_label.setText("Password must be 8+ characters with letters and numbers.")
+        if len(password) < 8:
+            self.error_label.setText("Password must be at least 8 characters.")
+            return
+
+        if " " in password:
+            self.error_label.setText("Password cannot contain spaces.")
+            return
+
+        if not re.search(r"[A-Z]", password):
+            self.error_label.setText("Password must include an uppercase letter.")
+            return
+
+        if not re.search(r"[a-z]", password):
+            self.error_label.setText("Password must include a lowercase letter.")
+            return
+
+        if not re.search(r"\d", password):
+            self.error_label.setText("Password must include a number.")
+            return
+
+        if not confirm:
+            self.error_label.setText("Confirm password is required.")
             return
 
         if password != confirm:
@@ -113,8 +138,18 @@ class RegisterScreen(QWidget):
             return
 
         try:
-            client.register(username, email, password)
+            client.register(full_name, email, password, confirm)
             QMessageBox.information(self, "Success", "Account created successfully.")
             self.register_success.emit()
+        except requests.HTTPError as exc:
+            message = "Registration failed. Please try again."
+            if exc.response is not None:
+                try:
+                    data = exc.response.json()
+                    if isinstance(data, dict) and data:
+                        message = str(next(iter(data.values())))
+                except ValueError:
+                    pass
+            self.error_label.setText(message)
         except Exception:
-            self.error_label.setText("Registration failed. Try a different username.")
+            self.error_label.setText("Registration failed. Please try again.")

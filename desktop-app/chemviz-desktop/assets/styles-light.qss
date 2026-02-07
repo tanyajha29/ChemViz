@@ -96,28 +96,16 @@ QMainWindow {
   border: 1px solid rgba(59, 130, 246, 0.25);
 }
 
-#themeButton {
-  padding: 10px 14px;
-  border-radius: 10px;
-  background-color: rgba(59, 130, 246, 0.12);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  color: #1d4ed8;
-}
-
-#themeButton:hover {
-  background-color: rgba(59, 130, 246, 0.2);
-}
-
 #logoutButton {
   padding: 10px 14px;
   border-radius: 10px;
-  background-color: rgba(239, 68, 68, 0.12);
+  background-color: transparent;
   border: 1px solid rgba(239, 68, 68, 0.25);
   color: #b91c1c;
 }
 
 #logoutButton:hover {
-  background-color: rgba(239, 68, 68, 0.2);
+  background-color: rgba(239, 68, 68, 0.12);
 }
 
 #navMeta {

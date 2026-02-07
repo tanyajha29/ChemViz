@@ -6,7 +6,7 @@ import { registerUser } from '../api/auth';
 
 export default function Register() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -14,23 +14,45 @@ export default function Register() {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const namePattern = /^[A-Za-z ]+$/;
+  const trimmedFullName = fullName.trim();
+  const trimmedEmail = email.trim().toLowerCase();
+  const isNameValid =
+    trimmedFullName.length >= 2 && namePattern.test(trimmedFullName);
+  const isEmailValid = emailPattern.test(trimmedEmail);
+  const hasUpper = /[A-Z]/.test(password);
+  const hasLower = /[a-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpaces = /\s/.test(password);
+  const isPasswordValid =
+    password.length >= 8 && hasUpper && hasLower && hasNumber && !hasSpaces;
+  const isConfirmValid = password === confirmPassword && confirmPassword.length > 0;
+  const isFormValid = isNameValid && isEmailValid && isPasswordValid && isConfirmValid;
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
     setSuccess('');
-    if (!username.trim() || !email.trim() || !password) {
-      setError('Username, email, and password are required.');
+    if (!trimmedFullName || !trimmedEmail || !password) {
+      setError('Full name, email, and password are required.');
       return;
     }
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
+    if (!isNameValid) {
+      setError('Full name must be at least 2 characters and use letters only.');
+      return;
+    }
+
+    if (!emailPattern.test(trimmedEmail)) {
       setError('Please enter a valid email address.');
       return;
     }
 
-    if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
-      setError('Password must be at least 8 characters and include letters and numbers.');
+    if (!isPasswordValid) {
+      setError(
+        'Password must be at least 8 characters and include uppercase, lowercase, and a number (no spaces).'
+      );
       return;
     }
 
@@ -42,11 +64,19 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await registerUser(username, email, password);
+      await registerUser(trimmedFullName, trimmedEmail, password, confirmPassword);
       setSuccess('Account created successfully.');
       window.alert('Account created successfully.');
       navigate('/dashboard');
-    } catch {
+    } catch (err: any) {
+      const data = err?.response?.data;
+      if (data && typeof data === 'object') {
+        const firstMessage = Object.values(data)[0];
+        if (typeof firstMessage === 'string') {
+          setError(firstMessage);
+          return;
+        }
+      }
       setError('Registration failed. Please try again.');
     } finally {
       setLoading(false);
@@ -71,9 +101,9 @@ export default function Register() {
           <div className="input-group">
             <FiUser className="input-icon" />
             <input
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               required
             />
           </div>
@@ -114,7 +144,7 @@ export default function Register() {
           {error && <p className="error-text">{error}</p>}
           {success && <p className="success-text">{success}</p>}
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={!isFormValid || loading}>
             {loading ? 'Creating account…' : 'Register'}
           </button>
         </form>

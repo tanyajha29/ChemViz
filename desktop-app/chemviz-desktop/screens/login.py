@@ -1,3 +1,6 @@
+import re
+
+import requests
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QFrame,
@@ -47,7 +50,7 @@ class LoginScreen(QWidget):
         subtitle.setWordWrap(True)
 
         self.username = QLineEdit()
-        self.username.setPlaceholderText("Username")
+        self.username.setPlaceholderText("Email or Username")
 
         self.password = QLineEdit()
         self.password.setPlaceholderText("Password")
@@ -85,12 +88,34 @@ class LoginScreen(QWidget):
         password = self.password.text()
 
         if not username or not password:
-            self.error_label.setText("Please enter username and password.")
+            self.error_label.setText("Please enter email/username and password.")
+            return
+
+        if "@" in username and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", username):
+            self.error_label.setText("Please enter a valid email address.")
+            return
+
+        if len(password) < 8:
+            self.error_label.setText("Password must be at least 8 characters.")
+            return
+
+        if password.strip() != password:
+            self.error_label.setText("Password cannot start or end with spaces.")
             return
 
         try:
             client.login(username, password)
             QMessageBox.information(self, "Success", "Login successful.")
             self.login_success.emit()
+        except requests.HTTPError as exc:
+            message = "Invalid email or password."
+            if exc.response is not None:
+                try:
+                    data = exc.response.json()
+                    if isinstance(data, dict) and data.get("error"):
+                        message = str(data.get("error"))
+                except ValueError:
+                    pass
+            self.error_label.setText(message)
         except Exception:
-            self.error_label.setText("Login failed. Check credentials.")
+            self.error_label.setText("Invalid email or password.")

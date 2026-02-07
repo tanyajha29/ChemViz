@@ -5,29 +5,50 @@ import { login } from '../api/auth';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const trimmedIdentifier = identifier.trim();
+  const isEmailInput = trimmedIdentifier.includes('@');
+  const isIdentifierValid =
+    trimmedIdentifier.length > 0 && (!isEmailInput || emailPattern.test(trimmedIdentifier));
+  const isPasswordTrimmed = password.trim() === password;
+  const isPasswordValid = password.length >= 8 && isPasswordTrimmed;
+  const isFormValid = isIdentifierValid && isPasswordValid;
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
     setSuccess('');
-    if (!username.trim() || !password) {
-      setError('Please enter both username and password.');
+    if (!trimmedIdentifier || !password) {
+      setError('Please enter your email/username and password.');
+      return;
+    }
+    if (isEmailInput && !emailPattern.test(trimmedIdentifier)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (!isPasswordTrimmed) {
+      setError('Password cannot start or end with spaces.');
       return;
     }
     setLoading(true);
 
     try {
-      await login(username, password);
+      await login(trimmedIdentifier, password);
       setSuccess('Login successful.');
       window.alert('Login successful.');
       navigate('/dashboard');
     } catch {
-      setError('Invalid username or password');
+      setError('Invalid email or password');
     } finally {
       setLoading(false);
     }
@@ -50,9 +71,9 @@ export default function Login() {
           <div className="input-group">
             <FiUser className="input-icon" />
             <input
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Email or Username"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               autoComplete="username"
               required
             />
@@ -73,7 +94,7 @@ export default function Login() {
           {error && <p className="error-text">{error}</p>}
           {success && <p className="success-text">{success}</p>}
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={!isFormValid || loading}>
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>

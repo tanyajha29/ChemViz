@@ -58,10 +58,15 @@ class ApiClient:
         _save_token(token)
         return token
 
-    def register(self, username: str, email: str, password: str) -> str:
+    def register(self, full_name: str, email: str, password: str, confirm_password: str) -> str:
         response = requests.post(
             f"{self.base_url}/api/auth/register/",
-            json={"username": username, "email": email, "password": password},
+            json={
+                "full_name": full_name,
+                "email": email,
+                "password": password,
+                "confirm_password": confirm_password,
+            },
             timeout=15,
         )
         response.raise_for_status()

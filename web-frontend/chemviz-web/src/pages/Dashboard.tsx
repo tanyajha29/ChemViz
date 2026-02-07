@@ -22,6 +22,38 @@ import {
 
 import { DatasetSummary, fetchLatestRows, fetchSummaries, LatestDataset } from '../api/datasets';
 
+const percentLabelPlugin = {
+  id: 'percentLabel',
+  afterDatasetDraw(chart: ChartJS, _args: unknown, pluginOptions: any) {
+    const { ctx, data } = chart;
+    const dataset = data.datasets?.[0];
+    if (!dataset) return;
+    const values = (dataset.data as Array<number | null | undefined>).map((v) =>
+      typeof v === 'number' ? v : Number(v)
+    );
+    const total = values.reduce((sum, value) => sum + (Number.isFinite(value) ? value : 0), 0);
+    if (!total) return;
+    const meta = chart.getDatasetMeta(0);
+    const minPercent = typeof pluginOptions?.minPercent === 'number' ? pluginOptions.minPercent : 4;
+
+    meta.data.forEach((element, index) => {
+      const raw = values[index] ?? 0;
+      if (!Number.isFinite(raw) || raw <= 0) return;
+      const percent = (raw / total) * 100;
+      if (percent < minPercent) return;
+      const { x, y } = (element as any).tooltipPosition();
+
+      ctx.save();
+      ctx.fillStyle = pluginOptions?.color ?? '#EAF6FF';
+      ctx.font = '600 12px Manrope, system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${percent.toFixed(0)}%`, x, y);
+      ctx.restore();
+    });
+  },
+};
+
 ChartJS.register(
   ArcElement,
   BarElement,
@@ -31,7 +63,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  percentLabelPlugin
 );
 
 export default function Dashboard() {
@@ -71,6 +104,20 @@ export default function Dashboard() {
     window.addEventListener('datasets:updated', handler);
     return () => window.removeEventListener('datasets:updated', handler);
   }, []);
+
+  const formatMetric = (value: number | null | undefined, decimals = 2) => {
+    if (value === null || value === undefined || Number.isNaN(value)) return '—';
+    return new Intl.NumberFormat('en-US', {
+      maximumFractionDigits: decimals,
+    }).format(value);
+  };
+
+  const formatCount = (value: number | null | undefined) => {
+    if (value === null || value === undefined || Number.isNaN(value)) return '—';
+    return new Intl.NumberFormat('en-US', {
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
 
   const typeDistributionData = useMemo(() => {
     if (!summary) return null;
@@ -162,6 +209,10 @@ export default function Dashboard() {
         position: 'bottom' as const,
         labels: { color: '#EAF6FF' },
       },
+      percentLabel: {
+        color: '#EAF6FF',
+        minPercent: 4,
+      },
     },
   };
 
@@ -181,27 +232,27 @@ export default function Dashboard() {
         <SummaryCard
           icon={<FiBox />}
           label="Total Equipment"
-          value={summary?.total_equipment ?? '—'}
+          value={formatCount(summary?.total_equipment ?? null)}
         />
         <SummaryCard
           icon={<FiTrendingUp />}
           label="Avg Flowrate"
-          value={summary?.avg_flowrate ?? '—'}
+          value={formatMetric(summary?.avg_flowrate ?? null)}
         />
         <SummaryCard
           icon={<FiActivity />}
           label="Avg Pressure"
-          value={summary?.avg_pressure ?? '—'}
+          value={formatMetric(summary?.avg_pressure ?? null)}
         />
         <SummaryCard
           icon={<FiThermometer />}
           label="Avg Temperature"
-          value={summary?.avg_temperature ?? '—'}
+          value={formatMetric(summary?.avg_temperature ?? null)}
         />
         <SummaryCard
           icon={<FiDatabase />}
           label="Datasets Stored"
-          value={uploadsCount}
+          value={formatCount(uploadsCount)}
         />
       </section>
 

@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QHBoxLayou
 
 class NavWidget(QFrame):
     route_changed = pyqtSignal(str)
-    theme_toggled = pyqtSignal()
     logout_requested = pyqtSignal()
 
     def __init__(self) -> None:
@@ -70,17 +69,11 @@ class NavWidget(QFrame):
         footer_layout.setContentsMargins(0, 0, 0, 0)
         footer_layout.setSpacing(10)
 
-        self.theme_button = QPushButton("Switch to Light")
-        self.theme_button.setObjectName("themeButton")
-        self.theme_button.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
-        self.theme_button.clicked.connect(self.theme_toggled.emit)
-
         self.logout_button = QPushButton("Logout")
         self.logout_button.setObjectName("logoutButton")
         self.logout_button.setIcon(self.style().standardIcon(QStyle.SP_DialogCloseButton))
         self.logout_button.clicked.connect(self.logout_requested.emit)
 
-        footer_layout.addWidget(self.theme_button)
         footer_layout.addWidget(self.logout_button)
 
         version_label = QLabel("ChemViz Analytics")
@@ -114,9 +107,3 @@ class NavWidget(QFrame):
             button.setProperty("active", key == route)
             button.style().unpolish(button)
             button.style().polish(button)
-
-    def set_theme_label(self, theme: str) -> None:
-        if theme == "dark":
-            self.theme_button.setText("Switch to Light")
-        else:
-            self.theme_button.setText("Switch to Dark")

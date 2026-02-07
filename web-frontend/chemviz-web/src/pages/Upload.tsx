@@ -9,6 +9,29 @@ export default function Upload() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const maxFileSizeMb = 5;
+  const maxFileSize = maxFileSizeMb * 1024 * 1024;
+
+  const isCsvFile = file ? file.name.toLowerCase().endsWith('.csv') : false;
+  const isSizeValid = file ? file.size <= maxFileSize : false;
+  const isFileValid = !!file && isCsvFile && isSizeValid;
+  const fileSizeLabel = file ? `${(file.size / (1024 * 1024)).toFixed(2)} MB` : '';
+
+  const handleFileChange = (nextFile: File | null) => {
+    setError('');
+    setMessage('');
+    setFile(nextFile);
+    if (!nextFile) {
+      return;
+    }
+    if (!nextFile.name.toLowerCase().endsWith('.csv')) {
+      setError('Invalid file type. Please upload a .csv file.');
+      return;
+    }
+    if (nextFile.size > maxFileSize) {
+      setError(`File is too large. Max size is ${maxFileSizeMb} MB.`);
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -20,6 +43,16 @@ export default function Upload() {
       return;
     }
 
+    if (!isCsvFile) {
+      setError('Invalid file type. Please upload a .csv file.');
+      return;
+    }
+
+    if (!isSizeValid) {
+      setError(`File is too large. Max size is ${maxFileSizeMb} MB.`);
+      return;
+    }
+
     setLoading(true);
     try {
       const result = await uploadDataset(file, name);
@@ -27,8 +60,13 @@ export default function Upload() {
       window.dispatchEvent(new Event('datasets:updated'));
       setFile(null);
       setName('');
-    } catch (err: unknown) {
-      setError('Upload failed. Please check the CSV and try again.');
+    } catch (err: any) {
+      const data = err?.response?.data;
+      if (data?.error) {
+        setError(String(data.error));
+      } else {
+        setError('Upload failed. Please check the CSV and try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -64,12 +102,16 @@ export default function Upload() {
               name="csvFile"
               type="file"
               accept=".csv"
-              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+              onChange={(event) => handleFileChange(event.target.files?.[0] ?? null)}
             />
             <div className="dropzone-icon">
               <FiUploadCloud />
             </div>
-            <p>{file ? file.name : 'Drop CSV here or click to browse'}</p>
+            <p>
+              {file
+                ? `${file.name} (${fileSizeLabel})`
+                : 'Drop CSV here or click to browse'}
+            </p>
             <span className="dropzone-hint">
               Required columns: Equipment Name, Type, Flowrate, Pressure,
               Temperature
@@ -77,10 +119,15 @@ export default function Upload() {
           </div>
 
           <div className="upload-actions">
-            <button type="submit" className="nav-button" disabled={loading}>
+            <button
+              type="submit"
+              className="nav-button"
+              disabled={!isFileValid || loading}
+            >
               {loading ? 'Uploading...' : 'Upload'}
             </button>
             <span className="upload-meta-chip">CSV only</span>
+            <span className="upload-meta-chip">Max {maxFileSizeMb} MB</span>
             <span className="upload-meta-chip">Max 5 uploads stored</span>
           </div>
 

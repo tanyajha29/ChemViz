@@ -1,6 +1,6 @@
 import re
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -23,59 +23,55 @@ def healthcheck(request):
 def register(request):
     User = get_user_model()
 
-    username = request.data.get('username', '').strip()
-    email = request.data.get('email', '').strip()
-    password = request.data.get('password', '')
+    full_name = request.data.get('full_name', '').strip()
+    email = request.data.get('email', '').strip().lower()
+    password = request.data.get('password', '').strip()
+    confirm_password = request.data.get('confirm_password', '').strip()
 
-    if not username or not email or not password:
-        return Response(
-            {'error': 'Username, email, and password are required.'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    errors = {}
 
-    if len(username) < 3 or len(username) > 30:
-        return Response(
-            {'error': 'Username must be between 3 and 30 characters.'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    if not full_name:
+        errors['full_name'] = 'Full name is required.'
+    elif len(full_name) < 2:
+        errors['full_name'] = 'Full name must be at least 2 characters.'
+    elif not re.fullmatch(r'[A-Za-z ]+', full_name):
+        errors['full_name'] = 'Full name can contain only letters and spaces.'
 
-    try:
-        UnicodeUsernameValidator()(username)
-    except ValidationError:
-        return Response(
-            {'error': 'Username contains invalid characters.'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    if not email:
+        errors['email'] = 'Email is required.'
+    else:
+        try:
+            validate_email(email)
+        except ValidationError:
+            errors['email'] = 'Enter a valid email address.'
 
-    try:
-        validate_email(email)
-    except ValidationError:
-        return Response(
-            {'error': 'Enter a valid email address.'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    if not password:
+        errors['password'] = 'Password is required.'
+    else:
+        if len(password) < 8:
+            errors['password'] = 'Password must be at least 8 characters.'
+        elif ' ' in password:
+            errors['password'] = 'Password cannot contain spaces.'
+        elif not re.search(r'[A-Z]', password):
+            errors['password'] = 'Password must include at least one uppercase letter.'
+        elif not re.search(r'[a-z]', password):
+            errors['password'] = 'Password must include at least one lowercase letter.'
+        elif not re.search(r'\d', password):
+            errors['password'] = 'Password must include at least one number.'
 
-    if len(password) < 8:
-        return Response(
-            {'error': 'Password must be at least 8 characters.'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    if not confirm_password:
+        errors['confirm_password'] = 'Confirm password is required.'
+    elif confirm_password != password:
+        errors['confirm_password'] = 'Passwords do not match.'
 
-    if not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
-        return Response(
-            {'error': 'Password must include letters and numbers.'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    if errors:
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-    if User.objects.filter(username=username).exists():
-        return Response(
-            {'error': 'Username already exists.'},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    username = email
 
     if User.objects.filter(email=email).exists():
         return Response(
-            {'error': 'Email already exists.'},
+            {'email': 'Email already registered.'},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -84,6 +80,8 @@ def register(request):
         email=email,
         password=password,
     )
+    user.first_name = full_name
+    user.save(update_fields=['first_name'])
 
     token, _ = Token.objects.get_or_create(user=user)
 
@@ -187,11 +185,31 @@ class PublicAuthTokenView(ObtainAuthToken):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        username = request.data.get('username', '').strip()
-        password = request.data.get('password', '')
-        if not username or not password:
+        identifier = request.data.get('username', '').strip()
+        password = request.data.get('password', '').strip()
+        if not identifier or not password:
             return Response(
-                {'error': 'Username and password are required.'},
+                {'error': 'Email/username and password are required.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        return super().post(request, *args, **kwargs)
+
+        user = None
+        if '@' in identifier:
+            user = (
+                get_user_model()
+                .objects
+                .filter(email__iexact=identifier)
+                .first()
+            )
+            if user:
+                identifier = user.username
+
+        user = authenticate(request, username=identifier, password=password)
+        if not user or not user.is_active:
+            return Response(
+                {'error': 'Invalid email or password'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)

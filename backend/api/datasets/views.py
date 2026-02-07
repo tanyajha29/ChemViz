@@ -24,10 +24,36 @@ class DatasetUploadView(APIView):
     def post(self, request):
         uploaded_file = request.FILES.get('file')
         name = request.data.get('name')
+        max_file_size = 5 * 1024 * 1024
+        max_rows = 10000
+        allowed_mime = {
+            'text/csv',
+            'application/csv',
+            'application/vnd.ms-excel',
+            'text/plain',
+        }
 
         if uploaded_file is None:
             return Response(
                 {'error': 'Missing file. Upload a CSV with form field "file".'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if uploaded_file.size == 0:
+            return Response(
+                {'error': 'CSV file is empty.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if uploaded_file.size > max_file_size:
+            return Response(
+                {'error': 'File exceeds maximum size (5 MB).'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if uploaded_file.content_type and uploaded_file.content_type not in allowed_mime:
+            return Response(
+                {'error': 'Invalid file type. Please upload a .csv file.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -46,9 +72,16 @@ class DatasetUploadView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        df = df.dropna(how='all')
         if df.empty:
             return Response(
                 {'error': 'CSV file is empty.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if len(df) > max_rows:
+            return Response(
+                {'error': f'CSV exceeds maximum row limit ({max_rows}).'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -57,10 +90,38 @@ class DatasetUploadView(APIView):
         if missing:
             return Response(
                 {
-                    'error': 'Missing required columns.',
+                    'error': f'Missing column: {missing[0]}',
                     'missing_columns': missing,
                     'received_columns': normalized_columns,
                 },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        df.columns = normalized_columns
+        numeric_columns = ['Flowrate', 'Pressure', 'Temperature']
+        numeric_df = df[numeric_columns].apply(pd.to_numeric, errors='coerce')
+        invalid_numeric = [
+            col for col in numeric_columns if numeric_df[col].isna().any()
+        ]
+        if invalid_numeric:
+            return Response(
+                {'error': f'Invalid numeric values in {", ".join(invalid_numeric)}.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if (numeric_df['Flowrate'] < 0).any():
+            return Response(
+                {'error': 'Flowrate must be greater than or equal to 0.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if (numeric_df['Pressure'] < 0).any():
+            return Response(
+                {'error': 'Pressure must be greater than or equal to 0.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if (numeric_df['Temperature'] < -50).any() or (numeric_df['Temperature'] > 500).any():
+            return Response(
+                {'error': 'Temperature must be between -50 and 500.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

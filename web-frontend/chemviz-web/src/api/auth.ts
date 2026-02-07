@@ -23,14 +23,16 @@ export async function login(username: string, password: string) {
 }
 
 export async function registerUser(
-  username: string,
+  fullName: string,
   email: string,
-  password: string
+  password: string,
+  confirmPassword: string
 ) {
   const response = await api.post<TokenResponse>('/api/auth/register/', {
-    username,
+    full_name: fullName,
     email,
     password,
+    confirm_password: confirmPassword,
   });
   setAuthToken(response.data.token);
   return response.data.token;

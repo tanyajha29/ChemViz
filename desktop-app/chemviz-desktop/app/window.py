@@ -65,7 +65,6 @@ class MainWindow(QMainWindow):
 
         self.nav = NavWidget()
         self.nav.route_changed.connect(self._on_route_change)
-        self.nav.theme_toggled.connect(self.toggle_theme)
         self.nav.logout_requested.connect(self._on_logout)
 
         self.top_bar = TopBar()
@@ -135,7 +134,6 @@ class MainWindow(QMainWindow):
             if app:
                 app.setStyleSheet(styles_path.read_text(encoding="utf-8"))
             self.current_theme = theme
-            self.nav.set_theme_label(theme)
             self.charts_screen.set_theme(theme)
             self.dashboard_screen.set_theme(theme)
             self.top_bar.set_theme_label(theme)
