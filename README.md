@@ -15,6 +15,33 @@ React + Chart.js web frontend, and a PyQt5 + Matplotlib desktop app.
 ## Architecture
 CSV -> Django REST API -> Analytics (Pandas) -> Web (React) / Desktop (PyQt5)
 
+## Architecture Diagram (ASCII)
+```
+            +-------------------+
+            |   CSV Dataset     |
+            +---------+---------+
+                      |
+                      v
+            +-------------------+
+            | Django REST API   |
+            |  Upload + Auth    |
+            +---------+---------+
+                      |
+                      v
+            +-------------------+
+            |  Pandas Analytics |
+            |  Summary + Types  |
+            +---------+---------+
+                      |
+        +-------------+-------------+
+        |                           |
+        v                           v
+  +-------------+             +--------------+
+  |  React Web  |             |  PyQt Desktop|
+  | Chart.js UI |             | Matplotlib UI|
+  +-------------+             +--------------+
+```
+
 ## Tech Stack
 1. Backend: Django, DRF, Pandas, SQLite
 2. Web: React, Chart.js
@@ -192,6 +219,50 @@ sample_data/sample_equipment_data.csv
 2. README with setup instructions
 3. Demo video (2-3 minutes)
 4. Optional deployment link
+
+## Screenshots
+Web
+1. Login
+   ![Web Login](docs/web-login.png)
+2. Dashboard
+   ![Web Dashboard](docs/web-Dashboard.png)
+3. Upload
+   ![Web Upload](docs/web-upload.png)
+
+Desktop
+1. Dashboard
+   ![Desktop Dashboard](docs/desktop-Dashboard.png)
+2. Upload
+   ![Desktop Upload](docs/desktop-upload.png)
+
+## Demo Video Script (2-3 Minutes)
+1. Intro (10-15s)
+   - "This is ChemViz, a hybrid web + desktop app for chemical equipment analytics."
+2. Login (15-20s)
+   - Show login in web app and successful navigation to dashboard.
+3. CSV Upload (20-30s)
+   - Upload `sample_equipment_data.csv` in web.
+   - Show success message and auto-refresh.
+4. Dashboard (30-40s)
+   - Show KPI cards and charts updated.
+   - Mention last 5 uploads rule.
+5. History / Report (20-30s)
+   - Open history and download PDF report.
+6. Desktop App (30-40s)
+   - Open desktop app, login, show same data/charts.
+7. Closing (10-15s)
+   - "Same API powers both clients; validation and analytics are consistent."
+
+## Release
+Desktop download link (GitHub Releases):
+```
+https://github.com/tanyajha29/ChemViz/releases/latest/download/ChemVizDesktop.exe
+```
+
+Release steps:
+1. Build the exe with PyInstaller
+2. Create a GitHub release tag (e.g., v1.0.0)
+3. Upload `ChemVizDesktop.exe` as a release asset
 
 ## License
 MIT (update if required)

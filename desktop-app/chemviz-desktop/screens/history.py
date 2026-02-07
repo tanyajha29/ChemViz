@@ -1,6 +1,15 @@
 from datetime import datetime
 
-from PyQt5.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import (
+    QFrame,
+    QFileDialog,
+    QLabel,
+    QHBoxLayout,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 from services.api_client import client
 
@@ -55,14 +64,24 @@ class HistoryScreen(QWidget):
         for upload in uploads:
             name = upload.get("name", "Dataset")
             uploaded_at = self._format_datetime(upload.get("uploaded_at"))
+            upload_id = upload.get("id")
             row = self._history_row(
                 "CSV Upload",
                 f"{name} processed",
                 uploaded_at,
+                upload_id,
+                name,
             )
             self.timeline_layout.addWidget(row)
 
-    def _history_row(self, title: str, details: str, meta: str) -> QFrame:
+    def _history_row(
+        self,
+        title: str,
+        details: str,
+        meta: str,
+        upload_id: int | None,
+        dataset_name: str,
+    ) -> QFrame:
         row = QFrame()
         row.setObjectName("historyItem")
         row_layout = QHBoxLayout(row)
@@ -89,7 +108,36 @@ class HistoryScreen(QWidget):
 
         row_layout.addWidget(icon)
         row_layout.addLayout(text_stack)
+
+        row_layout.addStretch()
+
+        if upload_id:
+            download_btn = QPushButton("Download PDF")
+            download_btn.setObjectName("historyAction")
+            download_btn.clicked.connect(
+                lambda _, uid=upload_id, name=dataset_name: self._download_report(uid, name)
+            )
+            row_layout.addWidget(download_btn)
+
         return row
+
+    def _download_report(self, upload_id: int, name: str) -> None:
+        suggested = f"{name or 'chemviz-report'}.pdf"
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save PDF Report",
+            suggested,
+            "PDF Files (*.pdf)",
+        )
+        if not path:
+            return
+        try:
+            content = client.fetch_report(upload_id)
+            with open(path, "wb") as handle:
+                handle.write(content)
+            QMessageBox.information(self, "Download Complete", "PDF report saved.")
+        except Exception:
+            QMessageBox.critical(self, "Download Failed", "Unable to download PDF report.")
 
     def _format_datetime(self, value: str | None) -> str:
         if not value:

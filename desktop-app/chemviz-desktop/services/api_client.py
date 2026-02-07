@@ -127,6 +127,15 @@ class ApiClient:
         response.raise_for_status()
         return response.json()
 
+    def fetch_report(self, upload_id: int) -> bytes:
+        response = requests.get(
+            f"{self.base_url}/api/datasets/report/{upload_id}/",
+            headers=self._headers(),
+            timeout=30,
+        )
+        response.raise_for_status()
+        return response.content
+
     def upload_csv(self, file_path: str, name: Optional[str] = None) -> Dict[str, Any]:
         with open(file_path, "rb") as handle:
             files = {"file": handle}

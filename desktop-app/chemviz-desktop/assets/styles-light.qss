@@ -336,6 +336,18 @@ QMainWindow {
   font-size: 13px;
 }
 
+#historyAction {
+  padding: 6px 12px;
+  border-radius: 10px;
+  background-color: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #1d4ed8;
+}
+
+#historyAction:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
 #profileRow {
   font-size: 14px;
   color: #0f172a;
