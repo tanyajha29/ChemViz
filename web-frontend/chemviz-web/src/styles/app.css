@@ -59,7 +59,7 @@ body::after {
 /* ---------- PAGE ---------- */
 .page {
   min-height: 100vh;
-  padding: 4rem 6vw;
+  padding: 4rem 10vw;
 }
 
 /* ---------- NAVBAR ---------- */

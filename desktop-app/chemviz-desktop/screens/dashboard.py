@@ -1,9 +1,12 @@
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QFrame,
     QGridLayout,
     QHBoxLayout,
     QLabel,
-    QPushButton,
+    QStyle,
     QVBoxLayout,
     QWidget,
 )
@@ -14,6 +17,7 @@ from services.api_client import client
 class DashboardScreen(QWidget):
     def __init__(self) -> None:
         super().__init__()
+        self.theme = "dark"
         layout = QVBoxLayout(self)
         layout.setContentsMargins(32, 32, 32, 32)
         layout.setSpacing(26)
@@ -35,10 +39,6 @@ class DashboardScreen(QWidget):
         header_row.addLayout(header_stack)
         header_row.addStretch()
 
-        preview_button = QPushButton("Preview")
-        preview_button.setObjectName("ghostButton")
-        header_row.addWidget(preview_button)
-
         layout.addLayout(header_row)
 
         summary_grid = QGridLayout()
@@ -46,47 +46,42 @@ class DashboardScreen(QWidget):
         self.summary_cards = {}
 
         cards = [
-            ("Total Equipment", "", "blue", "+12.5% from last week", "up"),
-            ("Avg Flowrate", "L/s", "purple", "+5.3% from last week", "up"),
-            ("Avg Pressure", "bar", "orange", "-1.2% from last week", "down"),
-            ("Avg Temperature", "C", "green", "+0.8% from last week", "up"),
+            ("Total Equipment", "", "blue", QStyle.SP_FileDialogListView),
+            ("Avg Flowrate", "L/s", "purple", QStyle.SP_ArrowUp),
+            ("Avg Pressure", "bar", "orange", QStyle.SP_ArrowRight),
+            ("Avg Temperature", "C", "green", QStyle.SP_DriveHDIcon),
+            ("Datasets Stored", "", "blue", QStyle.SP_DirOpenIcon),
         ]
 
-        for idx, (label, unit, variant, delta, trend) in enumerate(cards):
+        for idx, (label, unit, variant, icon) in enumerate(cards):
             card, value_widget = self._summary_card(
-                label, unit, variant, delta, trend
+                label, unit, variant, icon
             )
             self.summary_cards[label] = (value_widget, unit)
             summary_grid.addWidget(card, 0, idx)
 
         layout.addLayout(summary_grid)
 
-        chart_card = QFrame()
-        chart_card.setObjectName("sectionCard")
-        chart_layout = QVBoxLayout(chart_card)
-        chart_layout.setContentsMargins(22, 22, 22, 22)
-        chart_layout.setSpacing(12)
+        charts_grid = QGridLayout()
+        charts_grid.setSpacing(18)
 
-        chart_title = QLabel("Equipment Trends")
-        chart_title.setObjectName("sectionTitle")
-        chart_subtitle = QLabel("6-month performance overview")
-        chart_subtitle.setObjectName("sectionSubtitle")
+        self.type_card = self._chart_card(
+            "Equipment Type Distribution",
+            "Counts per equipment category",
+        )
+        self.type_canvas = self._chart_canvas()
+        self.type_card.layout().addWidget(self.type_canvas)
 
-        chart_layout.addWidget(chart_title)
-        chart_layout.addWidget(chart_subtitle)
+        self.avg_card = self._chart_card(
+            "Average Parameters",
+            "Flowrate, Pressure, Temperature",
+        )
+        self.avg_canvas = self._chart_canvas()
+        self.avg_card.layout().addWidget(self.avg_canvas)
 
-        chart_area = QFrame()
-        chart_area.setObjectName("chartArea")
-        chart_area_layout = QVBoxLayout(chart_area)
-        chart_area_layout.setContentsMargins(16, 16, 16, 16)
-        chart_area_layout.setSpacing(0)
-
-        chart_placeholder = QLabel("Chart area")
-        chart_placeholder.setObjectName("chartPlaceholder")
-        chart_area_layout.addWidget(chart_placeholder)
-
-        chart_layout.addWidget(chart_area)
-        layout.addWidget(chart_card)
+        charts_grid.addWidget(self.type_card, 0, 0)
+        charts_grid.addWidget(self.avg_card, 0, 1)
+        layout.addLayout(charts_grid)
 
         table_card = QFrame()
         table_card.setObjectName("sectionCard")
@@ -115,44 +110,7 @@ class DashboardScreen(QWidget):
             )
         )
 
-        uploads = [
-            (
-                "equipment_data_Q1_2026.csv",
-                "Dr. Sarah Chen",
-                "2026-02-05 14:32",
-                "1,247",
-                "Completed",
-            ),
-            (
-                "flowrate_analysis_feb.csv",
-                "Mark Thompson",
-                "2026-02-04 09:15",
-                "856",
-                "Completed",
-            ),
-            (
-                "pressure_sensors_jan.csv",
-                "Dr. Emily Rodriguez",
-                "2026-02-03 16:48",
-                "2,103",
-                "Completed",
-            ),
-            (
-                "temperature_logs_weekly.csv",
-                "James Liu",
-                "2026-02-02 11:20",
-                "645",
-                "Processing",
-            ),
-        ]
-
-        for filename, by, dt, records, status in uploads:
-            table_rows.addWidget(
-                self._table_row(
-                    [filename, by, dt, records, status],
-                    status=status,
-                )
-            )
+        self.table_rows = table_rows
 
         table_layout.addWidget(table)
         layout.addWidget(table_card)
@@ -166,11 +124,13 @@ class DashboardScreen(QWidget):
         except Exception:
             summary = {}
 
+        uploads = data.get("results", []) if data else []
         mapping = {
             "Total Equipment": summary.get("total_equipment"),
             "Avg Flowrate": summary.get("avg_flowrate"),
             "Avg Pressure": summary.get("avg_pressure"),
             "Avg Temperature": summary.get("avg_temperature"),
+            "Datasets Stored": len(uploads),
         }
 
         for label, raw_value in mapping.items():
@@ -179,6 +139,15 @@ class DashboardScreen(QWidget):
                 continue
             widget, unit = widget_unit
             widget.setText(self._format_value(raw_value, unit))
+
+        type_dist = summary.get("type_distribution", {}) if summary else {}
+        self._plot_type_distribution(type_dist)
+        self._plot_averages(summary)
+        self._render_table(uploads)
+
+    def set_theme(self, theme: str) -> None:
+        self.theme = theme
+        self.refresh()
 
     def _format_value(self, value: object, unit: str) -> str:
         if value in (None, "", "--"):
@@ -196,8 +165,7 @@ class DashboardScreen(QWidget):
         label: str,
         unit: str,
         variant: str,
-        delta: str,
-        trend: str,
+        icon: QStyle.StandardPixmap,
     ) -> tuple[QFrame, QLabel]:
         card = QFrame()
         card.setObjectName("kpiCard")
@@ -205,24 +173,135 @@ class DashboardScreen(QWidget):
         card_layout.setContentsMargins(18, 18, 18, 18)
         card_layout.setSpacing(8)
 
-        icon = QFrame()
-        icon.setObjectName("kpiIcon")
-        icon.setProperty("variant", variant)
-        icon.setFixedSize(44, 44)
+        icon_frame = QFrame()
+        icon_frame.setObjectName("kpiIcon")
+        icon_frame.setProperty("variant", variant)
+        icon_frame.setFixedSize(44, 44)
+        icon_layout = QVBoxLayout(icon_frame)
+        icon_layout.setContentsMargins(0, 0, 0, 0)
+        icon_layout.setSpacing(0)
+
+        icon_label = QLabel()
+        icon_label.setObjectName("kpiIconGlyph")
+        icon_label.setPixmap(self.style().standardIcon(icon).pixmap(22, 22))
+        icon_layout.addWidget(icon_label, alignment=Qt.AlignCenter)
 
         label_widget = QLabel(label)
         label_widget.setObjectName("kpiLabel")
         value_widget = QLabel("--")
         value_widget.setObjectName("kpiValue")
-        delta_widget = QLabel(delta)
-        delta_widget.setObjectName("kpiDelta")
-        delta_widget.setProperty("trend", trend)
 
-        card_layout.addWidget(icon)
+        card_layout.addWidget(icon_frame)
         card_layout.addWidget(label_widget)
         card_layout.addWidget(value_widget)
-        card_layout.addWidget(delta_widget)
         return card, value_widget
+
+    def _chart_card(self, title: str, subtitle: str) -> QFrame:
+        card = QFrame()
+        card.setObjectName("sectionCard")
+        card_layout = QVBoxLayout(card)
+        card_layout.setContentsMargins(22, 22, 22, 22)
+        card_layout.setSpacing(12)
+
+        chart_title = QLabel(title)
+        chart_title.setObjectName("sectionTitle")
+        chart_subtitle = QLabel(subtitle)
+        chart_subtitle.setObjectName("sectionSubtitle")
+
+        card_layout.addWidget(chart_title)
+        card_layout.addWidget(chart_subtitle)
+        return card
+
+    def _chart_canvas(self) -> FigureCanvas:
+        fig = Figure(figsize=(4, 3))
+        return FigureCanvas(fig)
+
+    def _apply_matplotlib_style(self, axes) -> None:
+        fig = axes.figure
+        if self.theme == "light":
+            fig.patch.set_facecolor("#ffffff")
+            axes.set_facecolor("#ffffff")
+            axes.tick_params(colors="#334155")
+            axes.title.set_color("#0f172a")
+            axes.grid(color="#e2e8f0", alpha=0.6)
+        else:
+            fig.patch.set_facecolor("#0f172a")
+            axes.set_facecolor("#0f172a")
+            axes.tick_params(colors="#94a3b8")
+            axes.title.set_color("#e2e8f0")
+            axes.grid(color="#1f2937", alpha=0.6)
+
+    def _plot_type_distribution(self, type_dist: dict) -> None:
+        fig = self.type_canvas.figure
+        fig.clear()
+        ax = fig.add_subplot(111)
+        self._apply_matplotlib_style(ax)
+
+        if not type_dist:
+            ax.text(0.5, 0.5, "No data", ha="center", va="center", color="#94a3b8")
+            ax.set_xticks([])
+            ax.set_yticks([])
+            self.type_canvas.draw()
+            return
+
+        labels = list(type_dist.keys())
+        values = list(type_dist.values())
+        ax.bar(labels, values, color="#3b82f6", alpha=0.85)
+        ax.set_ylabel("Count")
+        ax.set_title("Equipment Type Distribution")
+        ax.tick_params(axis="x", rotation=30)
+        self.type_canvas.draw()
+
+    def _plot_averages(self, summary: dict) -> None:
+        fig = self.avg_canvas.figure
+        fig.clear()
+        ax = fig.add_subplot(111)
+        self._apply_matplotlib_style(ax)
+
+        labels = ["Flowrate", "Pressure", "Temperature"]
+        values = [
+            summary.get("avg_flowrate") if summary else None,
+            summary.get("avg_pressure") if summary else None,
+            summary.get("avg_temperature") if summary else None,
+        ]
+        if not any(v is not None for v in values):
+            ax.text(0.5, 0.5, "No data", ha="center", va="center", color="#94a3b8")
+            ax.set_xticks([])
+            ax.set_yticks([])
+            self.avg_canvas.draw()
+            return
+
+        safe_values = [v if v is not None else 0 for v in values]
+        ax.bar(labels, safe_values, color="#38bdf8", alpha=0.85)
+        ax.set_title("Average Parameters")
+        self.avg_canvas.draw()
+
+    def _render_table(self, uploads: list[dict]) -> None:
+        while self.table_rows.count() > 1:
+            item = self.table_rows.takeAt(1)
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+
+        if not uploads:
+            empty_row = self._table_row(
+                ["No uploads yet.", "", "", "", ""], status=None
+            )
+            self.table_rows.addWidget(empty_row)
+            return
+
+        for upload in uploads:
+            name = upload.get("name", "Dataset")
+            uploaded_at = upload.get("uploaded_at", "")
+            summary = upload.get("summary", {})
+            total = summary.get("total_equipment", "--")
+            status = "Completed"
+            self.table_rows.addWidget(
+                self._table_row(
+                    [name, "Current User", uploaded_at, str(total), status],
+                    status=status,
+                )
+            )
 
     def _table_row(
         self,

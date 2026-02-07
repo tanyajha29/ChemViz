@@ -95,6 +95,7 @@ class MainWindow(QMainWindow):
         if route == "dashboard":
             self.content_stack.setCurrentWidget(self.dashboard_screen)
             self._set_topbar("Dashboard", "Overview of recent equipment analytics.")
+            self.dashboard_screen.refresh()
         elif route == "upload":
             self.content_stack.setCurrentWidget(self.upload_screen)
             self._set_topbar("Upload CSV", "Import equipment data for analysis.")
@@ -126,6 +127,7 @@ class MainWindow(QMainWindow):
             self.current_theme = theme
             self.nav.set_theme_label(theme)
             self.charts_screen.set_theme(theme)
+            self.dashboard_screen.set_theme(theme)
 
     def _on_upload_success(self) -> None:
         self.dashboard_screen.refresh()
