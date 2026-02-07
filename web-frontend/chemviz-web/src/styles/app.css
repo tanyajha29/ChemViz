@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
 :root {
   --bg-main: #0b0f1a;
   --glass-bg: rgba(255, 255, 255, 0.06);
@@ -18,7 +20,8 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Manrope', 'Inter', system-ui, sans-serif;
+  font-size: 16px;
   background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   color: var(--text-main);
   position: relative;
@@ -180,7 +183,7 @@ body::after {
   align-items: center;
   gap: 0.6rem;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .nav-dot {
@@ -201,7 +204,7 @@ body::after {
 
 .nav-link {
   position: relative;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
@@ -286,7 +289,7 @@ body::after {
 
 .nav-actions .nav-button {
   padding: 0.45rem 0.9rem;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   border-radius: 10px;
 }
 
@@ -307,7 +310,7 @@ body::after {
 
 .home-title {
   margin: 0 0 0.5rem;
-  font-size: 3rem;
+  font-size: 3.3rem;
   color: #ffffff;
 }
 
@@ -315,7 +318,7 @@ body::after {
   margin: 0 auto;
   max-width: 680px;
   color: #cbd5e1;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
 }
 
 .hero-actions {
@@ -400,14 +403,14 @@ body::after {
 
 .metric-value {
   display: block;
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: #ffffff;
 }
 
 .metric-label {
   color: #cbd5e1;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 /* ---------- PROFILE ---------- */
@@ -427,7 +430,7 @@ body::after {
 
 .profile-label {
   color: #9ca3af;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .profile-value {
@@ -529,7 +532,7 @@ body::after {
 
 /* ---------- TITLES ---------- */
 .page-title {
-  font-size: 3.2rem;
+  font-size: 3.4rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #ffffff;
@@ -540,11 +543,11 @@ body::after {
   max-width: 720px;
   margin-inline: auto;
   color: var(--text-muted);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .section-title {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.8rem;
 }
@@ -1001,7 +1004,7 @@ body::after {
 
 /* ---------- HERO TITLE SHIMMER (Disabled to match auth UI) ---------- */
 .page-title {
-  font-size: 3.2rem;
+  font-size: 3.4rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #ffffff;
@@ -1126,7 +1129,7 @@ body::after {
   background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   position: relative;
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', 'Inter', sans-serif;
 }
 
 /* FLOATING BACKGROUND SHAPES */
@@ -1194,7 +1197,7 @@ body::after {
 }
 
 .auth-header p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #cbd5e1;
 }
 
@@ -1219,7 +1222,7 @@ body::after {
 
 .input-group input {
   width: 100%;
-  padding: 0.7rem 0.75rem 0.7rem 2.4rem;
+  padding: 0.8rem 0.85rem 0.8rem 2.5rem;
   border-radius: 10px;
   border: none;
   outline: none;

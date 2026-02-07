@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QStyle
 
 
 class NavWidget(QFrame):
@@ -41,11 +41,21 @@ class NavWidget(QFrame):
 
         layout.addWidget(header)
 
-        self.btn_dashboard = self._make_button("Dashboard", "dashboard")
-        self.btn_upload = self._make_button("Upload CSV", "upload")
-        self.btn_charts = self._make_button("Charts", "charts")
-        self.btn_history = self._make_button("History", "history")
-        self.btn_profile = self._make_button("Profile", "profile")
+        self.btn_dashboard = self._make_button(
+            "Dashboard", "dashboard", QStyle.SP_DesktopIcon
+        )
+        self.btn_upload = self._make_button(
+            "Upload CSV", "upload", QStyle.SP_ArrowUp
+        )
+        self.btn_charts = self._make_button(
+            "Charts", "charts", QStyle.SP_FileDialogDetailedView
+        )
+        self.btn_history = self._make_button(
+            "History", "history", QStyle.SP_BrowserReload
+        )
+        self.btn_profile = self._make_button(
+            "Profile", "profile", QStyle.SP_DirHomeIcon
+        )
 
         layout.addWidget(self.btn_dashboard)
         layout.addWidget(self.btn_upload)
@@ -62,10 +72,12 @@ class NavWidget(QFrame):
 
         self.theme_button = QPushButton("Switch to Light")
         self.theme_button.setObjectName("themeButton")
+        self.theme_button.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
         self.theme_button.clicked.connect(self.theme_toggled.emit)
 
         self.logout_button = QPushButton("Logout")
         self.logout_button.setObjectName("logoutButton")
+        self.logout_button.setIcon(self.style().standardIcon(QStyle.SP_DialogCloseButton))
         self.logout_button.clicked.connect(self.logout_requested.emit)
 
         footer_layout.addWidget(self.theme_button)
@@ -81,9 +93,12 @@ class NavWidget(QFrame):
 
         layout.addWidget(footer)
 
-    def _make_button(self, text: str, route: str) -> QPushButton:
+    def _make_button(
+        self, text: str, route: str, icon: QStyle.StandardPixmap
+    ) -> QPushButton:
         button = QPushButton(text)
         button.setObjectName("navItem")
+        button.setIcon(self.style().standardIcon(icon))
         button.clicked.connect(lambda: self.route_changed.emit(route))
         return button
 

@@ -4,8 +4,8 @@
 QWidget {
   background-color: #f5f7fb;
   color: #0f172a;
-  font-family: "Segoe UI";
-  font-size: 14px;
+  font-family: "Segoe UI Variable", "Segoe UI", "Arial";
+  font-size: 15px;
 }
 
 QMainWindow {
@@ -52,6 +52,7 @@ QMainWindow {
   background-color: transparent;
   color: #334155;
   border: 1px solid transparent;
+  font-size: 14px;
 }
 
 #navItem:hover {
@@ -87,51 +88,78 @@ QMainWindow {
 
 #navMeta {
   color: #64748b;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #navMetaMuted {
   color: #94a3b8;
-  font-size: 11px;
+  font-size: 12px;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+#topBar {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+#topBarTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#topBarSubtitle {
+  color: #64748b;
+  font-size: 13px;
+}
+
+#topBarButton {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background-color: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0f172a;
 }
 
 /* =========================
    TYPOGRAPHY
 ========================= */
 #pageTitle {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 600;
 }
 
 #pageSubtitle {
   color: #64748b;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 #sectionTitle {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
 }
 
 #sectionSubtitle,
 #cardSubtitle {
   color: #64748b;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #cardTitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
 }
 
 #tileTitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
 }
 
 #tileSubtitle {
   color: #64748b;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 /* =========================
@@ -190,16 +218,16 @@ QMainWindow {
 
 #kpiLabel {
   color: #64748b;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #kpiValue {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 600;
 }
 
 #kpiDelta {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #kpiDelta[trend="up"] { color: #16a34a; }
@@ -229,7 +257,7 @@ QMainWindow {
 
 #tableHeaderText {
   color: #334155;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -240,7 +268,7 @@ QMainWindow {
 
 #tableCell {
   color: #1f2937;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #statusPill[state="success"] {
@@ -273,12 +301,12 @@ QMainWindow {
 
 #historySubtitle {
   color: #64748b;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #historyMeta {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #profileRow {
@@ -306,5 +334,18 @@ QLineEdit:focus {
 ========================= */
 #errorText {
   color: #dc2626;
-  font-size: 13px;
+  font-size: 14px;
+}
+
+/* =========================
+   HOVER EFFECTS
+========================= */
+#kpiCard:hover,
+#sectionCard:hover,
+#chartTile:hover,
+#uploadCard:hover,
+#infoCard:hover,
+#historyCard:hover,
+#profileCard:hover {
+  border: 1px solid rgba(59, 130, 246, 0.35);
 }

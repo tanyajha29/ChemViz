@@ -4,8 +4,8 @@
 QWidget {
   background-color: #0b0f16;
   color: #e5e7eb;
-  font-family: "Segoe UI";
-  font-size: 14px;
+  font-family: "Segoe UI Variable", "Segoe UI", "Arial";
+  font-size: 15px;
 }
 
 QMainWindow {
@@ -52,6 +52,7 @@ QMainWindow {
   background-color: transparent;
   color: #cbd5e1;
   border: 1px solid transparent;
+  font-size: 14px;
 }
 
 #navItem:hover {
@@ -95,55 +96,87 @@ QMainWindow {
 
 #navMeta {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #navMetaMuted {
   color: #6b7280;
-  font-size: 11px;
+  font-size: 12px;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+#topBar {
+  background-color: rgba(17, 24, 39, 0.9);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#topBarTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#topBarSubtitle {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+#topBarButton {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+}
+
+#topBarButton:hover {
+  border: 1px solid rgba(59, 130, 246, 0.6);
+  color: #93c5fd;
 }
 
 /* =========================
    TYPOGRAPHY
 ========================= */
 #pageTitle {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 600;
 }
 
 #pageSubtitle {
   color: #94a3b8;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 #sectionTitle {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
 }
 
 #sectionSubtitle {
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #cardTitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
 }
 
 #cardSubtitle {
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #tileTitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
 }
 
 #tileSubtitle {
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 /* =========================
@@ -204,16 +237,16 @@ QMainWindow {
 
 #kpiLabel {
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #kpiValue {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 600;
 }
 
 #kpiDelta {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #kpiDelta[trend="up"] { color: #34d399; }
@@ -259,7 +292,7 @@ QMainWindow {
 
 #tableHeaderText {
   color: #cbd5e1;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -274,13 +307,13 @@ QMainWindow {
 
 #tableCell {
   color: #e2e8f0;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #statusPill {
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -325,23 +358,36 @@ QMainWindow {
 }
 
 #historyTitle {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 #historySubtitle {
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #historyMeta {
   color: #64748b;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #profileRow {
-  font-size: 14px;
+  font-size: 15px;
   color: #e2e8f0;
+}
+
+/* =========================
+   HOVER EFFECTS
+========================= */
+#kpiCard:hover,
+#sectionCard:hover,
+#chartTile:hover,
+#uploadCard:hover,
+#infoCard:hover,
+#historyCard:hover,
+#profileCard:hover {
+  border: 1px solid rgba(59, 130, 246, 0.35);
 }
 
 /* =========================
