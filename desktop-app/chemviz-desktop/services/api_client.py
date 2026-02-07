@@ -103,6 +103,16 @@ class ApiClient:
         response.raise_for_status()
         return response.json()
 
+    def update_profile(self, username: str, email: str) -> Dict[str, Any]:
+        response = requests.put(
+            f"{self.base_url}/api/auth/me/",
+            headers=self._headers(),
+            json={"username": username, "email": email},
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
     def fetch_latest_rows(self) -> Dict[str, Any]:
         response = requests.get(
             f"{self.base_url}/api/datasets/latest/",

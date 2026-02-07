@@ -97,10 +97,70 @@ def register(request):
     )
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
 def me(request):
     user = request.user
+    if request.method == 'PUT':
+        username = request.data.get('username', '').strip()
+        email = request.data.get('email', '').strip()
+
+        if not username or not email:
+            return Response(
+                {'error': 'Username and email are required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if len(username) < 3 or len(username) > 30:
+            return Response(
+                {'error': 'Username must be between 3 and 30 characters.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            UnicodeUsernameValidator()(username)
+        except ValidationError:
+            return Response(
+                {'error': 'Username contains invalid characters.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response(
+                {'error': 'Enter a valid email address.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if (
+            get_user_model()
+            .objects
+            .filter(username=username)
+            .exclude(id=user.id)
+            .exists()
+        ):
+            return Response(
+                {'error': 'Username already exists.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if (
+            get_user_model()
+            .objects
+            .filter(email=email)
+            .exclude(id=user.id)
+            .exists()
+        ):
+            return Response(
+                {'error': 'Email already exists.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.username = username
+        user.email = email
+        user.save(update_fields=['username', 'email'])
+
     role = 'Admin' if user.is_staff or user.is_superuser else 'User'
     return Response(
         {

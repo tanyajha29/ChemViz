@@ -48,3 +48,11 @@ export async function fetchProfile() {
   const response = await api.get<ProfileResponse>('/api/auth/me/');
   return response.data;
 }
+
+export async function updateProfile(username: string, email: string) {
+  const response = await api.put<ProfileResponse>('/api/auth/me/', {
+    username,
+    email,
+  });
+  return response.data;
+}

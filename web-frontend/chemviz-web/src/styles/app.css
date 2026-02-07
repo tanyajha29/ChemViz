@@ -59,7 +59,7 @@ body::after {
 /* ---------- PAGE ---------- */
 .page {
   min-height: 100vh;
-  padding: 2rem 10vw 4rem;
+  padding: 1rem 10vw 4rem;
 }
 
 /* ---------- NAVBAR ---------- */
@@ -449,6 +449,15 @@ body::after {
 .profile-value {
   color: #e5e7eb;
   font-weight: 600;
+}
+
+.profile-input {
+  width: 60%;
+  padding: 0.4rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: rgba(15, 32, 39, 0.6);
+  color: var(--text-main);
 }
 
 /* ---------- RESPONSIVE ---------- */
@@ -844,9 +853,17 @@ body::after {
 /* ===============================
    DASHBOARD LAYOUT
 ================================ */
+.dashboard-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* ===============================
@@ -961,8 +978,13 @@ body::after {
 }
 
 .chart-card {
-  padding: 2rem;
-  min-height: 340px;
+  padding: 1.6rem;
+  min-height: 260px;
+}
+
+.chart-card canvas {
+  width: 100% !important;
+  height: 220px !important;
 }
 
 /* ===============================

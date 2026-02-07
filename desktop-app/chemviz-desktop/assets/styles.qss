@@ -12,6 +12,19 @@ QLabel {
   background-color: transparent;
 }
 
+QLineEdit[readOnly="true"] {
+  background-color: rgba(15, 23, 42, 0.5);
+  color: #9ca3af;
+}
+
+#profileInput {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
 QMainWindow {
   background-color: #0b0f16;
 }

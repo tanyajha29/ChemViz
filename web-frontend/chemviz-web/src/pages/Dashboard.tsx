@@ -166,7 +166,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="page gradient-bg">
+    <div className="page gradient-bg dashboard-page">
       <header className="page-header fade-in">
         <h1 className="page-title">Dashboard</h1>
         <p className="page-subtitle">

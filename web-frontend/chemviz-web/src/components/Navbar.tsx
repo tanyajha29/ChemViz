@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
   FiClock,
   FiDownload,
@@ -11,7 +10,6 @@ import {
   FiUserPlus,
 } from 'react-icons/fi';
 
-import { fetchReport, fetchSummaries } from '../api/datasets';
 import { getAuthToken } from '../api/token';
 
 const navItems = [
@@ -22,40 +20,9 @@ const navItems = [
 ];
 
 export default function Navbar() {
-  const navigate = useNavigate();
   const token = getAuthToken();
-  const [downloading, setDownloading] = useState(false);
-
-  const handleDownload = async () => {
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    setDownloading(true);
-    try {
-      const summaries = await fetchSummaries();
-      const latest = summaries[0];
-      if (!latest) {
-        window.alert('No reports available yet.');
-        return;
-      }
-
-      const blob = await fetchReport(latest.id);
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `chemviz-report-${latest.id}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      window.alert('Unable to download report. Please try again.');
-    } finally {
-      setDownloading(false);
-    }
-  };
+  const downloadUrl =
+    'https://github.com/tanyajha29/ChemViz/releases/latest/download/ChemVizDesktop.exe';
 
   return (
     <header className="nav glass">
@@ -80,19 +47,19 @@ export default function Navbar() {
       </nav>
 
       <div className="nav-actions">
+        <a
+          href={downloadUrl}
+          className="nav-button"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span className="nav-icon">
+            <FiDownload />
+          </span>
+          Download App
+        </a>
         {token ? (
           <>
-            <button
-              type="button"
-              className="nav-button"
-              onClick={handleDownload}
-              disabled={downloading}
-            >
-              <span className="nav-icon">
-                <FiDownload />
-              </span>
-              {downloading ? 'Downloading...' : 'Download'}
-            </button>
             <NavLink to="/profile" className="nav-link">
               <span className="nav-icon">
                 <FiUser />
@@ -106,13 +73,13 @@ export default function Navbar() {
               <span className="nav-icon">
                 <FiLogIn />
               </span>
-              Login
+              Sign In
             </NavLink>
             <NavLink to="/register" className="nav-button">
               <span className="nav-icon">
                 <FiUserPlus />
               </span>
-              Register
+              Sign Up
             </NavLink>
           </>
         )}

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiLogOut, FiMail, FiUser } from 'react-icons/fi';
 
-import { fetchProfile, logout, type ProfileResponse } from '../api/auth';
+import { fetchProfile, logout, updateProfile, type ProfileResponse } from '../api/auth';
 import { getAuthToken } from '../api/token';
 
 export default function Profile() {
@@ -11,6 +11,11 @@ export default function Profile() {
 
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const [editing, setEditing] = useState(false);
+  const [formUsername, setFormUsername] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
 
   const handleLogout = async () => {
     await logout();
@@ -33,6 +38,8 @@ export default function Profile() {
       .then((data) => {
         if (!isMounted) return;
         setProfile(data);
+        setFormUsername(data.username ?? '');
+        setFormEmail(data.email ?? '');
         setStatus('idle');
       })
       .catch(() => {
@@ -45,6 +52,32 @@ export default function Profile() {
       isMounted = false;
     };
   }, [token]);
+
+  const handleEditToggle = () => {
+    if (!profile) return;
+    setEditing((prev) => !prev);
+    setFormError('');
+    setFormSuccess('');
+    setFormUsername(profile.username ?? '');
+    setFormEmail(profile.email ?? '');
+  };
+
+  const handleSave = async () => {
+    setFormError('');
+    setFormSuccess('');
+    if (!formUsername.trim() || !formEmail.trim()) {
+      setFormError('Username and email are required.');
+      return;
+    }
+    try {
+      const updated = await updateProfile(formUsername.trim(), formEmail.trim());
+      setProfile(updated);
+      setFormSuccess('Profile updated.');
+      setEditing(false);
+    } catch {
+      setFormError('Unable to update profile. Please try again.');
+    }
+  };
 
   return (
     <div
@@ -106,9 +139,17 @@ export default function Profile() {
               <FiUser className="inline-icon" />
               Username
             </span>
-            <span className="profile-value">
-              {profile?.username ?? (token ? 'Loading...' : 'Not logged in')}
-            </span>
+            {editing ? (
+              <input
+                className="profile-input"
+                value={formUsername}
+                onChange={(e) => setFormUsername(e.target.value)}
+              />
+            ) : (
+              <span className="profile-value">
+                {profile?.username ?? (token ? 'Loading...' : 'Not logged in')}
+              </span>
+            )}
           </div>
 
           <div className="profile-row">
@@ -116,9 +157,17 @@ export default function Profile() {
               <FiMail className="inline-icon" />
               Email
             </span>
-            <span className="profile-value">
-              {profile?.email ?? (token ? 'Loading...' : 'Not logged in')}
-            </span>
+            {editing ? (
+              <input
+                className="profile-input"
+                value={formEmail}
+                onChange={(e) => setFormEmail(e.target.value)}
+              />
+            ) : (
+              <span className="profile-value">
+                {profile?.email ?? (token ? 'Loading...' : 'Not logged in')}
+              </span>
+            )}
           </div>
 
           <div className="profile-row">
@@ -132,6 +181,37 @@ export default function Profile() {
             <p className="error-text">
               Unable to load profile details. Please sign in again.
             </p>
+          )}
+
+          {formError && <p className="error-text">{formError}</p>}
+          {formSuccess && <p className="success-text">{formSuccess}</p>}
+
+          <button
+            type="button"
+            className="nav-button"
+            onClick={editing ? handleSave : handleEditToggle}
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              marginTop: '0.5rem',
+            }}
+          >
+            {editing ? 'Save Changes' : 'Edit Profile'}
+          </button>
+
+          {editing && (
+            <button
+              type="button"
+              className="nav-link"
+              onClick={handleEditToggle}
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                marginTop: '0.5rem',
+              }}
+            >
+              Cancel
+            </button>
           )}
 
           <button
