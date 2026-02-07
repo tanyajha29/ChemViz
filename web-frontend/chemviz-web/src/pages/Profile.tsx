@@ -128,17 +128,6 @@ export default function Profile() {
             </span>
           </div>
 
-          <div className="profile-row">
-            <span className="profile-label">Last Login</span>
-            <span className="profile-value">
-              {profile?.last_login
-                ? new Date(profile.last_login).toLocaleString()
-                : token
-                  ? 'Not available'
-                  : 'Not logged in'}
-            </span>
-          </div>
-
           {status === 'error' && (
             <p className="error-text">
               Unable to load profile details. Please sign in again.

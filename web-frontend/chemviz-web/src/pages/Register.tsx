@@ -82,9 +82,10 @@ export default function Register() {
             <FiMail className="input-icon" />
             <input
               type="email"
-              placeholder="Email (optional)"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 

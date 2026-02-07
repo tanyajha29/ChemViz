@@ -197,12 +197,16 @@ class ChartsScreen(QWidget):
 
         labels = list(type_dist.keys())
         values = list(type_dist.values())
-        bars = ax.bar(labels, values, color="#3b82f6")
-        for bar in bars:
-            bar.set_alpha(0.8)
-        ax.set_ylabel("Count")
+        text_color = "#334155" if self.theme == "light" else "#e2e8f0"
+        ax.pie(
+            values,
+            labels=labels,
+            autopct="%1.0f%%",
+            startangle=90,
+            textprops={"color": text_color, "fontsize": 8},
+        )
         ax.set_title("Equipment Type Distribution")
-        ax.tick_params(axis="x", rotation=30)
+        ax.axis("equal")
         self.type_canvas.draw()
 
     def _plot_averages(self, summary: dict) -> None:

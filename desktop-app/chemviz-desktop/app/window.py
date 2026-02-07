@@ -70,6 +70,7 @@ class MainWindow(QMainWindow):
 
         self.top_bar = TopBar()
         self.top_bar.profile_requested.connect(lambda: self._on_route_change("profile"))
+        self.top_bar.theme_toggled.connect(self.toggle_theme)
 
         self.content_stack = QStackedWidget()
         self.content_stack.addWidget(self.dashboard_screen)
@@ -137,6 +138,7 @@ class MainWindow(QMainWindow):
             self.nav.set_theme_label(theme)
             self.charts_screen.set_theme(theme)
             self.dashboard_screen.set_theme(theme)
+            self.top_bar.set_theme_label(theme)
 
     def _on_upload_success(self) -> None:
         self.dashboard_screen.refresh()

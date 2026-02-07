@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayou
 
 class TopBar(QFrame):
     profile_requested = pyqtSignal()
+    theme_toggled = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -28,13 +29,25 @@ class TopBar(QFrame):
         layout.addLayout(title_block)
         layout.addStretch()
 
+        self.theme_button = QPushButton("Switch to Light")
+        self.theme_button.setObjectName("topBarButton")
+        self.theme_button.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
+        self.theme_button.clicked.connect(self.theme_toggled.emit)
+
         self.profile_button = QPushButton("Profile")
         self.profile_button.setObjectName("topBarButton")
         self.profile_button.setIcon(self.style().standardIcon(QStyle.SP_DirHomeIcon))
         self.profile_button.clicked.connect(self.profile_requested.emit)
 
+        layout.addWidget(self.theme_button)
         layout.addWidget(self.profile_button)
 
     def set_title(self, title: str, subtitle: str) -> None:
         self.title_label.setText(title)
         self.subtitle_label.setText(subtitle)
+
+    def set_theme_label(self, theme: str) -> None:
+        if theme == "dark":
+            self.theme_button.setText("Switch to Light")
+        else:
+            self.theme_button.setText("Switch to Dark")

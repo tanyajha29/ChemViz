@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Doughnut } from 'react-chartjs-2';
 import {
+  ArcElement,
   BarElement,
   CategoryScale,
   Chart as ChartJS,
   Legend,
   LinearScale,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
 } from 'chart.js';
@@ -19,7 +22,17 @@ import {
 
 import { DatasetSummary, fetchLatestRows, fetchSummaries, LatestDataset } from '../api/datasets';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+ChartJS.register(
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function Dashboard() {
   const [summary, setSummary] = useState<DatasetSummary | null>(null);
@@ -61,13 +74,23 @@ export default function Dashboard() {
 
   const typeDistributionData = useMemo(() => {
     if (!summary) return null;
+    const labels = Object.keys(summary.type_distribution ?? {});
+    const values = Object.values(summary.type_distribution ?? {});
+    const palette = [
+      'rgba(79, 172, 254, 0.75)',
+      'rgba(124, 58, 237, 0.7)',
+      'rgba(245, 158, 11, 0.7)',
+      'rgba(16, 185, 129, 0.7)',
+      'rgba(236, 72, 153, 0.7)',
+      'rgba(59, 130, 246, 0.7)',
+    ];
     return {
-      labels: Object.keys(summary.type_distribution ?? {}),
+      labels,
       datasets: [
         {
           label: 'Equipment Count',
-          data: Object.values(summary.type_distribution ?? {}),
-          backgroundColor: 'rgba(79, 172, 254, 0.65)',
+          data: values,
+          backgroundColor: labels.map((_, idx) => palette[idx % palette.length]),
           borderRadius: 6,
         },
       ],
@@ -132,6 +155,16 @@ export default function Dashboard() {
     },
   };
 
+  const doughnutOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: { color: '#EAF6FF' },
+      },
+    },
+  };
+
   return (
     <div className="page gradient-bg">
       <header className="page-header fade-in">
@@ -177,7 +210,7 @@ export default function Dashboard() {
         <div className="chart-card glass glow-hover fade-in neon-glow">
           <h2 className="section-title">Equipment Type Distribution</h2>
           {summary && typeDistributionData ? (
-            <Bar data={typeDistributionData} options={chartOptions} />
+            <Doughnut data={typeDistributionData} options={doughnutOptions} />
           ) : (
             <p className="empty-state">Upload a CSV to visualize equipment types.</p>
           )}
@@ -229,11 +262,23 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td colSpan={5} className="empty-state">
-                Upload a CSV to populate this table.
-              </td>
-            </tr>
+            {latestRows?.rows?.length ? (
+              latestRows.rows.slice(0, 10).map((row) => (
+                <tr key={`${row['Equipment Name']}-${row.Type}`}>
+                  <td>{row['Equipment Name']}</td>
+                  <td>{row.Type}</td>
+                  <td>{row.Flowrate}</td>
+                  <td>{row.Pressure}</td>
+                  <td>{row.Temperature}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="empty-state">
+                  Upload a CSV to populate this table.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </section>

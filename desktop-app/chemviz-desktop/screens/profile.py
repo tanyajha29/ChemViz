@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QWidget
 
@@ -35,15 +33,12 @@ class ProfileScreen(QWidget):
         self.email_label.setObjectName("profileRow")
         self.role_label = QLabel("Role: --")
         self.role_label.setObjectName("profileRow")
-        self.last_login_label = QLabel("Last Login: --")
-        self.last_login_label.setObjectName("profileRow")
         self.status_label = QLabel("")
         self.status_label.setObjectName("cardSubtitle")
 
         card_layout.addWidget(self.username_label)
         card_layout.addWidget(self.email_label)
         card_layout.addWidget(self.role_label)
-        card_layout.addWidget(self.last_login_label)
         card_layout.addWidget(self.status_label)
 
         self.logout_button = QPushButton("Logout")
@@ -60,20 +55,9 @@ class ProfileScreen(QWidget):
             username = profile.get("username", "--")
             email = profile.get("email", "--")
             role = profile.get("role", "--")
-            last_login = self._format_datetime(profile.get("last_login"))
             self.username_label.setText(f"Username: {username}")
             self.email_label.setText(f"Email: {email}")
             self.role_label.setText(f"Role: {role}")
-            self.last_login_label.setText(f"Last Login: {last_login}")
             self.status_label.setText("")
         except Exception:
             self.status_label.setText("Unable to load profile.")
-
-    def _format_datetime(self, value: str | None) -> str:
-        if not value:
-            return "--"
-        try:
-            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
-            return dt.strftime("%Y-%m-%d %H:%M")
-        except ValueError:
-            return value
