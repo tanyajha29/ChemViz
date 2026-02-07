@@ -16,6 +16,15 @@ QMainWindow {
   background-color: #0b0f16;
 }
 
+#pageScroll {
+  background: transparent;
+  border: none;
+}
+
+#pageScroll QWidget {
+  background: transparent;
+}
+
 /* =========================
    NAVIGATION
 ========================= */
@@ -392,7 +401,6 @@ QMainWindow {
 #metricToggle[active="true"] {
   border: 1px solid rgba(124, 58, 237, 0.6);
   color: #f5f3ff;
-  box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
 }
 
 /* =========================

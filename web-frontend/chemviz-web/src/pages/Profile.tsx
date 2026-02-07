@@ -47,7 +47,15 @@ export default function Profile() {
   }, [token]);
 
   return (
-    <div className="page fade-in">
+    <div
+      className="page fade-in"
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       {/* Header */}
       <div className="page-header center-text">
         <h1 className="page-title">
@@ -59,69 +67,89 @@ export default function Profile() {
         </p>
       </div>
 
-      {/* Profile Card */}
-      <section className="profile-card glass neon-glow fade-in fade-delay-1">
-        {/* Avatar */}
-        <div className="center-text">
-          <div
+      {/* Centered Card Wrapper */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+        }}
+      >
+        {/* Profile Card */}
+        <section
+          className="profile-card glass neon-glow fade-in fade-delay-1"
+          style={{
+            width: '100%',
+            maxWidth: 420,
+          }}
+        >
+          {/* Avatar */}
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <div
+              style={{
+                width: 72,
+                height: 72,
+                borderRadius: '50%',
+                margin: '0 auto',
+                display: 'grid',
+                placeItems: 'center',
+                fontSize: '1.8rem',
+                fontWeight: 800,
+                color: '#000',
+                background:
+                  'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))',
+                boxShadow: '0 0 24px rgba(124,58,237,0.45)',
+              }}
+            >
+              {profile?.username?.[0]?.toUpperCase() ?? 'U'}
+            </div>
+          </div>
+
+          {/* User Info */}
+          <div className="profile-row">
+            <span className="profile-label">
+              <FiUser className="inline-icon" />
+              Username
+            </span>
+            <span className="profile-value">
+              {profile?.username ?? (token ? 'Loading…' : 'Not logged in')}
+            </span>
+          </div>
+
+          <div className="profile-row">
+            <span className="profile-label">
+              <FiMail className="inline-icon" />
+              Email
+            </span>
+            <span className="profile-value">
+              {profile?.email ?? (token ? 'Loading…' : 'Not logged in')}
+            </span>
+          </div>
+
+          {status === 'error' && (
+            <p className="error-text">
+              Unable to load profile details. Please sign in again.
+            </p>
+          )}
+
+          {/* Logout */}
+          <button
+            type="button"
+            className="nav-button"
+            onClick={handleLogout}
             style={{
-              width: 72,
-              height: 72,
-              borderRadius: '50%',
-              margin: '0 auto 1rem',
-              display: 'grid',
-              placeItems: 'center',
-              fontSize: '1.8rem',
-              fontWeight: 800,
-              color: '#000',
-              background:
-                'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))',
-              boxShadow: '0 0 24px rgba(124,58,237,0.45)',
+              width: '100%',
+              justifyContent: 'center',
+              marginTop: '1rem',
             }}
           >
-            {profile?.username?.[0]?.toUpperCase() ?? 'U'}
-          </div>
-        </div>
-
-        {/* User Info */}
-        <div className="profile-row">
-          <span className="profile-label">
-            <FiUser className="inline-icon" />
-            Username
-          </span>
-          <span className="profile-value">
-            {profile?.username ?? (token ? 'Loading…' : 'Not logged in')}
-          </span>
-        </div>
-
-        <div className="profile-row">
-          <span className="profile-label">
-            <FiMail className="inline-icon" />
-            Email
-          </span>
-          <span className="profile-value">
-            {profile?.email ?? (token ? 'Loading…' : 'Not logged in')}
-          </span>
-        </div>
-
-        {/* Status */}
-        {status === 'error' && (
-          <p className="error-text">
-            Unable to load profile details. Please sign in again.
-          </p>
-        )}
-
-        {/* Logout */}
-        <button
-          type="button"
-          className="nav-button"
-          onClick={handleLogout}
-          style={{ justifyContent: 'center', marginTop: '0.6rem' }}
-        >
-          <FiLogOut className="inline-icon" />
-          Logout
-        </button>
-      </section>
+            <FiLogOut className="inline-icon" />
+            Logout
+          </button>
+        </section>
+      </div>
     </div>
   );
 }

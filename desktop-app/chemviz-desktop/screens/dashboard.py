@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
     QLabel,
+    QScrollArea,
     QStyle,
     QPushButton,
     QVBoxLayout,
@@ -23,9 +24,21 @@ class DashboardScreen(QWidget):
         self.theme = "dark"
         self.metric = "Flowrate"
         self.latest_rows: list[dict] = []
-        layout = QVBoxLayout(self)
+        root_layout = QVBoxLayout(self)
+        root_layout.setContentsMargins(0, 0, 0, 0)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setObjectName("pageScroll")
+        scroll.setFrameShape(QFrame.NoFrame)
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
         layout.setContentsMargins(32, 32, 32, 32)
         layout.setSpacing(26)
+
+        scroll.setWidget(container)
+        root_layout.addWidget(scroll)
 
         summary_grid = QGridLayout()
         summary_grid.setSpacing(18)
@@ -58,14 +71,14 @@ class DashboardScreen(QWidget):
             "Equipment Type Distribution",
             "Counts per equipment category",
         )
-        self.type_canvas = self._chart_canvas()
+        self.type_canvas = self._chart_canvas(220)
         self.type_card.layout().addWidget(self.type_canvas)
 
         self.avg_card = self._chart_card(
             "Average Parameters",
             "Flowrate, Pressure, Temperature",
         )
-        self.avg_canvas = self._chart_canvas()
+        self.avg_canvas = self._chart_canvas(220)
         self.avg_card.layout().addWidget(self.avg_canvas)
 
         charts_grid.addWidget(self.type_card, 0, 0)
@@ -92,7 +105,7 @@ class DashboardScreen(QWidget):
 
         deep_layout.addLayout(toggle_row)
 
-        self.deep_canvas = self._chart_canvas()
+        self.deep_canvas = self._chart_canvas(260)
         deep_layout.addWidget(self.deep_canvas)
 
         layout.addWidget(self.deep_card)
@@ -250,9 +263,16 @@ class DashboardScreen(QWidget):
         card_layout.addWidget(chart_subtitle)
         return card
 
-    def _chart_canvas(self) -> FigureCanvas:
+    def _chart_canvas(self, min_height: int = 220) -> FigureCanvas:
         fig = Figure(figsize=(4, 3))
-        return FigureCanvas(fig)
+        canvas = FigureCanvas(fig)
+        canvas.setObjectName("chartCanvas")
+        canvas.setMinimumHeight(min_height)
+        canvas.setSizePolicy(
+            canvas.sizePolicy().Expanding,
+            canvas.sizePolicy().Expanding,
+        )
+        return canvas
 
     def _apply_matplotlib_style(self, axes) -> None:
         fig = axes.figure

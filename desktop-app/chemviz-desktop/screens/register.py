@@ -1,7 +1,6 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QFrame,
-    QHBoxLayout,
     QLabel,
     QLineEdit,
     QPushButton,
@@ -18,15 +17,16 @@ class RegisterScreen(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
-        layout = QHBoxLayout(self)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addStretch()
 
         card = QFrame()
         card.setObjectName("authCard")
         card.setFixedWidth(460)
         card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(28, 28, 28, 28)
-        card_layout.setSpacing(14)
+        card_layout.setContentsMargins(26, 24, 26, 24)
+        card_layout.setSpacing(10)
 
         logo = QFrame()
         logo.setObjectName("authLogo")
@@ -40,9 +40,11 @@ class RegisterScreen(QWidget):
 
         title = QLabel("Create account")
         title.setObjectName("authTitle")
+        title.setAlignment(Qt.AlignCenter)
 
         subtitle = QLabel("Set up access for your equipment analytics.")
         subtitle.setObjectName("authSubtitle")
+        subtitle.setAlignment(Qt.AlignCenter)
         subtitle.setWordWrap(True)
 
         self.username = QLineEdit()
@@ -70,7 +72,7 @@ class RegisterScreen(QWidget):
         self.link_button.setObjectName("authLink")
         self.link_button.clicked.connect(self.login_requested.emit)
 
-        card_layout.addWidget(logo, alignment=Qt.AlignLeft)
+        card_layout.addWidget(logo, alignment=Qt.AlignCenter)
         card_layout.addWidget(title)
         card_layout.addWidget(subtitle)
         card_layout.addWidget(self.username)
@@ -79,9 +81,9 @@ class RegisterScreen(QWidget):
         card_layout.addWidget(self.confirm)
         card_layout.addWidget(self.error_label)
         card_layout.addWidget(self.button)
-        card_layout.addWidget(self.link_button)
+        card_layout.addWidget(self.link_button, alignment=Qt.AlignCenter)
 
-        layout.addWidget(card)
+        layout.addWidget(card, alignment=Qt.AlignHCenter)
         layout.addStretch()
 
     def _handle_register(self) -> None:

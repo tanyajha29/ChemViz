@@ -18,15 +18,16 @@ class LoginScreen(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
-        layout = QHBoxLayout(self)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addStretch()
 
         card = QFrame()
         card.setObjectName("authCard")
-        card.setFixedWidth(460)
+        card.setFixedWidth(420)
         card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(28, 28, 28, 28)
-        card_layout.setSpacing(14)
+        card_layout.setContentsMargins(26, 24, 26, 24)
+        card_layout.setSpacing(10)
 
         logo = QFrame()
         logo.setObjectName("authLogo")
@@ -63,16 +64,19 @@ class LoginScreen(QWidget):
         self.link_button.setObjectName("authLink")
         self.link_button.clicked.connect(self.register_requested.emit)
 
-        card_layout.addWidget(logo, alignment=Qt.AlignLeft)
+        title.setAlignment(Qt.AlignCenter)
+        subtitle.setAlignment(Qt.AlignCenter)
+
+        card_layout.addWidget(logo, alignment=Qt.AlignCenter)
         card_layout.addWidget(title)
         card_layout.addWidget(subtitle)
         card_layout.addWidget(self.username)
         card_layout.addWidget(self.password)
         card_layout.addWidget(self.error_label)
         card_layout.addWidget(self.button)
-        card_layout.addWidget(self.link_button)
+        card_layout.addWidget(self.link_button, alignment=Qt.AlignCenter)
 
-        layout.addWidget(card)
+        layout.addWidget(card, alignment=Qt.AlignHCenter)
         layout.addStretch()
 
     def _handle_login(self) -> None:
