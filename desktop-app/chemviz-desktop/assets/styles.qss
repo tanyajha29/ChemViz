@@ -5,7 +5,7 @@ QWidget {
   background-color: #0b0f16;
   color: #e5e7eb;
   font-family: "Segoe UI";
-  font-size: 13px;
+  font-size: 14px;
 }
 
 QMainWindow {
@@ -95,43 +95,43 @@ QMainWindow {
    TYPOGRAPHY
 ========================= */
 #pageTitle {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 600;
 }
 
 #pageSubtitle {
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #sectionTitle {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
 }
 
 #sectionSubtitle {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #cardTitle {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 #cardSubtitle {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #tileTitle {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 #tileSubtitle {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* =========================
@@ -192,16 +192,16 @@ QMainWindow {
 
 #kpiLabel {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #kpiValue {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
 }
 
 #kpiDelta {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #kpiDelta[trend="up"] { color: #34d399; }
@@ -246,7 +246,7 @@ QMainWindow {
 
 #tableHeaderText {
   color: #cbd5e1;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -261,13 +261,13 @@ QMainWindow {
 
 #tableCell {
   color: #e2e8f0;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #statusPill {
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -312,18 +312,18 @@ QMainWindow {
 }
 
 #historyTitle {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 #historySubtitle {
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #historyMeta {
   color: #64748b;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 /* =========================
@@ -351,7 +351,7 @@ QLineEdit:focus {
 ========================= */
 #errorText {
   color: #f87171;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* =========================

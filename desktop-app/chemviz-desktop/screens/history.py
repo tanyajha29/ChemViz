@@ -1,4 +1,8 @@
+from datetime import datetime
+
 from PyQt5.QtWidgets import QFrame, QLabel, QHBoxLayout, QVBoxLayout, QWidget
+
+from services.api_client import client
 
 
 class HistoryScreen(QWidget):
@@ -18,45 +22,80 @@ class HistoryScreen(QWidget):
 
         timeline = QFrame()
         timeline.setObjectName("historyCard")
-        timeline_layout = QVBoxLayout(timeline)
-        timeline_layout.setContentsMargins(22, 22, 22, 22)
-        timeline_layout.setSpacing(16)
+        self.timeline_layout = QVBoxLayout(timeline)
+        self.timeline_layout.setContentsMargins(22, 22, 22, 22)
+        self.timeline_layout.setSpacing(16)
 
-        items = [
-            ("CSV Upload", "equipment_data_Q1_2026.csv processed", "February 5, 2026 - 14:32"),
-            ("Analysis Run", "Flowrate analysis completed for February data", "February 4, 2026 - 09:15"),
-            ("CSV Upload", "pressure_sensors_jan.csv processed", "February 3, 2026 - 16:48"),
-            ("Report Generated", "Monthly equipment performance report created", "February 2, 2026 - 11:20"),
-        ]
-
-        for title, details, meta in items:
-            row = QFrame()
-            row.setObjectName("historyItem")
-            row_layout = QHBoxLayout(row)
-            row_layout.setContentsMargins(16, 12, 16, 12)
-            row_layout.setSpacing(14)
-
-            icon = QFrame()
-            icon.setObjectName("historyIcon")
-            icon.setFixedSize(40, 40)
-
-            text_stack = QVBoxLayout()
-            text_stack.setSpacing(4)
-
-            title_label = QLabel(title)
-            title_label.setObjectName("historyTitle")
-            details_label = QLabel(details)
-            details_label.setObjectName("historySubtitle")
-            meta_label = QLabel(meta)
-            meta_label.setObjectName("historyMeta")
-
-            text_stack.addWidget(title_label)
-            text_stack.addWidget(details_label)
-            text_stack.addWidget(meta_label)
-
-            row_layout.addWidget(icon)
-            row_layout.addLayout(text_stack)
-            timeline_layout.addWidget(row)
+        self.empty_label = QLabel("No uploads yet. Upload a CSV to see history.")
+        self.empty_label.setObjectName("historySubtitle")
+        self.timeline_layout.addWidget(self.empty_label)
 
         layout.addWidget(timeline)
         layout.addStretch()
+
+    def refresh(self) -> None:
+        for idx in reversed(range(self.timeline_layout.count())):
+            item = self.timeline_layout.itemAt(idx)
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+
+        try:
+            data = client.fetch_summaries()
+            uploads = data.get("results", [])
+        except Exception:
+            uploads = []
+
+        if not uploads:
+            self.empty_label = QLabel("No uploads yet. Upload a CSV to see history.")
+            self.empty_label.setObjectName("historySubtitle")
+            self.timeline_layout.addWidget(self.empty_label)
+            return
+
+        for upload in uploads:
+            name = upload.get("name", "Dataset")
+            uploaded_at = self._format_datetime(upload.get("uploaded_at"))
+            row = self._history_row(
+                "CSV Upload",
+                f"{name} processed",
+                uploaded_at,
+            )
+            self.timeline_layout.addWidget(row)
+
+    def _history_row(self, title: str, details: str, meta: str) -> QFrame:
+        row = QFrame()
+        row.setObjectName("historyItem")
+        row_layout = QHBoxLayout(row)
+        row_layout.setContentsMargins(16, 12, 16, 12)
+        row_layout.setSpacing(14)
+
+        icon = QFrame()
+        icon.setObjectName("historyIcon")
+        icon.setFixedSize(40, 40)
+
+        text_stack = QVBoxLayout()
+        text_stack.setSpacing(4)
+
+        title_label = QLabel(title)
+        title_label.setObjectName("historyTitle")
+        details_label = QLabel(details)
+        details_label.setObjectName("historySubtitle")
+        meta_label = QLabel(meta)
+        meta_label.setObjectName("historyMeta")
+
+        text_stack.addWidget(title_label)
+        text_stack.addWidget(details_label)
+        text_stack.addWidget(meta_label)
+
+        row_layout.addWidget(icon)
+        row_layout.addLayout(text_stack)
+        return row
+
+    def _format_datetime(self, value: str | None) -> str:
+        if not value:
+            return ""
+        try:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return dt.strftime("%B %d, %Y - %H:%M")
+        except ValueError:
+            return value

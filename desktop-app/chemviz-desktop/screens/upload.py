@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QFileDialog,
     QFrame,
@@ -14,6 +14,8 @@ from services.api_client import client
 
 
 class UploadScreen(QWidget):
+    upload_success = pyqtSignal()
+
     def __init__(self) -> None:
         super().__init__()
         layout = QVBoxLayout(self)
@@ -148,5 +150,6 @@ class UploadScreen(QWidget):
         try:
             client.upload_csv(self.file_path, "")
             self.status_label.setText("Upload complete.")
+            self.upload_success.emit()
         except Exception:
             self.status_label.setText("Upload failed. Check the CSV and try again.")

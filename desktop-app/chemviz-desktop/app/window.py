@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("ChemViz Desktop")
-        self.resize(1200, 720)
+        self.resize(1360, 820)
         self.current_theme = "dark"
 
         self.root_stack = QStackedWidget()
@@ -26,6 +26,7 @@ class MainWindow(QMainWindow):
 
         self.dashboard_screen = DashboardScreen()
         self.upload_screen = UploadScreen()
+        self.upload_screen.upload_success.connect(self._on_upload_success)
         self.charts_screen = ChartsScreen()
         self.history_screen = HistoryScreen()
 
@@ -60,6 +61,8 @@ class MainWindow(QMainWindow):
         self.nav.set_active("dashboard")
         self.content_stack.setCurrentWidget(self.dashboard_screen)
         self.dashboard_screen.refresh()
+        self.history_screen.refresh()
+        self.charts_screen.refresh()
 
     def _on_route_change(self, route: str) -> None:
         if route == "dashboard":
@@ -68,8 +71,10 @@ class MainWindow(QMainWindow):
             self.content_stack.setCurrentWidget(self.upload_screen)
         elif route == "charts":
             self.content_stack.setCurrentWidget(self.charts_screen)
+            self.charts_screen.refresh()
         elif route == "history":
             self.content_stack.setCurrentWidget(self.history_screen)
+            self.history_screen.refresh()
 
         self.nav.set_active(route)
 
@@ -84,6 +89,12 @@ class MainWindow(QMainWindow):
                 app.setStyleSheet(styles_path.read_text(encoding="utf-8"))
             self.current_theme = theme
             self.nav.set_theme_label(theme)
+            self.charts_screen.set_theme(theme)
+
+    def _on_upload_success(self) -> None:
+        self.dashboard_screen.refresh()
+        self.history_screen.refresh()
+        self.charts_screen.refresh()
 
     def toggle_theme(self) -> None:
         next_theme = "light" if self.current_theme == "dark" else "dark"
