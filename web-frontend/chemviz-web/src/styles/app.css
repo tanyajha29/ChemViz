@@ -201,6 +201,19 @@ body::after {
   box-shadow: 0 0 10px rgba(255, 55, 95, 0.4);
 }
 
+.nav-logo-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+}
+
 
 .nav-link {
   position: relative;

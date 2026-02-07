@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PyQt5.QtCore import Qt
@@ -22,25 +24,6 @@ class DashboardScreen(QWidget):
         layout.setContentsMargins(32, 32, 32, 32)
         layout.setSpacing(26)
 
-        header_row = QHBoxLayout()
-        header_row.setSpacing(12)
-
-        header_stack = QVBoxLayout()
-        header_stack.setSpacing(6)
-
-        title = QLabel("Dashboard")
-        title.setObjectName("pageTitle")
-        subtitle = QLabel("Overview of recent equipment analytics.")
-        subtitle.setObjectName("pageSubtitle")
-
-        header_stack.addWidget(title)
-        header_stack.addWidget(subtitle)
-
-        header_row.addLayout(header_stack)
-        header_row.addStretch()
-
-        layout.addLayout(header_row)
-
         summary_grid = QGridLayout()
         summary_grid.setSpacing(18)
         self.summary_cards = {}
@@ -53,12 +36,15 @@ class DashboardScreen(QWidget):
             ("Datasets Stored", "", "blue", QStyle.SP_DirOpenIcon),
         ]
 
+        columns = 3
         for idx, (label, unit, variant, icon) in enumerate(cards):
             card, value_widget = self._summary_card(
                 label, unit, variant, icon
             )
             self.summary_cards[label] = (value_widget, unit)
-            summary_grid.addWidget(card, 0, idx)
+            row = idx // columns
+            col = idx % columns
+            summary_grid.addWidget(card, row, col)
 
         layout.addLayout(summary_grid)
 
@@ -292,7 +278,7 @@ class DashboardScreen(QWidget):
 
         for upload in uploads:
             name = upload.get("name", "Dataset")
-            uploaded_at = upload.get("uploaded_at", "")
+            uploaded_at = self._format_datetime(upload.get("uploaded_at", ""))
             summary = upload.get("summary", {})
             total = summary.get("total_equipment", "--")
             status = "Completed"
@@ -302,6 +288,15 @@ class DashboardScreen(QWidget):
                     status=status,
                 )
             )
+
+    def _format_datetime(self, value: str | None) -> str:
+        if not value:
+            return ""
+        try:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return dt.strftime("%Y-%m-%d %H:%M")
+        except ValueError:
+            return value
 
     def _table_row(
         self,

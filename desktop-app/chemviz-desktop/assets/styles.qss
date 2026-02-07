@@ -443,3 +443,45 @@ QScrollBar::add-line,
 QScrollBar::sub-line {
   height: 0;
 }
+#authCard {
+  background-color: rgba(17, 24, 39, 0.92);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#authLogo {
+  background: qlineargradient(
+    x1:0, y1:0, x2:1, y2:1,
+    stop:0 #2563eb,
+    stop:1 #38bdf8
+  );
+  border-radius: 14px;
+}
+
+#authLogoText {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#authTitle {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+#authSubtitle {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+#authLink {
+  background: transparent;
+  border: none;
+  color: #93c5fd;
+  text-align: left;
+  padding: 6px 0;
+}
+
+#authLink:hover {
+  color: #bfdbfe;
+}

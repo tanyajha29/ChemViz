@@ -58,6 +58,20 @@ class ApiClient:
         _save_token(token)
         return token
 
+    def register(self, username: str, email: str, password: str) -> str:
+        response = requests.post(
+            f"{self.base_url}/api/auth/register/",
+            json={"username": username, "email": email, "password": password},
+            timeout=15,
+        )
+        response.raise_for_status()
+        token = response.json().get("token")
+        if not token:
+            raise ValueError("Token not returned by server.")
+        self.token = token
+        _save_token(token)
+        return token
+
     def logout(self) -> None:
         self.token = None
         _clear_token()

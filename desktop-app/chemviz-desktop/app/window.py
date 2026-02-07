@@ -15,6 +15,7 @@ from screens.charts import ChartsScreen
 from screens.dashboard import DashboardScreen
 from screens.history import HistoryScreen
 from screens.login import LoginScreen
+from screens.register import RegisterScreen
 from screens.profile import ProfileScreen
 from screens.upload import UploadScreen
 from widgets.nav import NavWidget
@@ -35,6 +36,11 @@ class MainWindow(QMainWindow):
 
         self.login_screen = LoginScreen()
         self.login_screen.login_success.connect(self._on_login_success)
+        self.login_screen.register_requested.connect(self._on_show_register)
+
+        self.register_screen = RegisterScreen()
+        self.register_screen.register_success.connect(self._on_login_success)
+        self.register_screen.login_requested.connect(self._on_show_login)
 
         self.dashboard_screen = DashboardScreen()
         self.upload_screen = UploadScreen()
@@ -46,6 +52,7 @@ class MainWindow(QMainWindow):
         self.app_shell = self._build_shell()
 
         self.root_stack.addWidget(self.login_screen)
+        self.root_stack.addWidget(self.register_screen)
         self.root_stack.addWidget(self.app_shell)
         self.root_stack.setCurrentWidget(self.login_screen)
 
@@ -137,6 +144,12 @@ class MainWindow(QMainWindow):
 
     def _on_logout(self) -> None:
         client.logout()
+        self.root_stack.setCurrentWidget(self.login_screen)
+
+    def _on_show_register(self) -> None:
+        self.root_stack.setCurrentWidget(self.register_screen)
+
+    def _on_show_login(self) -> None:
         self.root_stack.setCurrentWidget(self.login_screen)
 
     def _set_topbar(self, title: str, subtitle: str) -> None:
