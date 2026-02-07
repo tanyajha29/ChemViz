@@ -42,3 +42,21 @@ export async function fetchReport(uploadId: number) {
   });
   return response.data as Blob;
 }
+
+export type LatestDataset = {
+  id: number;
+  name: string;
+  uploaded_at: string;
+  rows: Array<{
+    'Equipment Name': string;
+    Type: string;
+    Flowrate: number;
+    Pressure: number;
+    Temperature: number;
+  }>;
+};
+
+export async function fetchLatestRows() {
+  const response = await api.get<LatestDataset>('/api/datasets/latest/');
+  return response.data;
+}

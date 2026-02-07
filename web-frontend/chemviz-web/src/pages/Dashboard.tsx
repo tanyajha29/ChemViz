@@ -17,7 +17,7 @@ import {
   FiDatabase,
 } from 'react-icons/fi';
 
-import { DatasetSummary, fetchSummaries } from '../api/datasets';
+import { DatasetSummary, fetchLatestRows, fetchSummaries, LatestDataset } from '../api/datasets';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -25,23 +25,38 @@ export default function Dashboard() {
   const [summary, setSummary] = useState<DatasetSummary | null>(null);
   const [uploadsCount, setUploadsCount] = useState(0);
   const [error, setError] = useState('');
+  const [latestRows, setLatestRows] = useState<LatestDataset | null>(null);
+  const [metric, setMetric] = useState<'Flowrate' | 'Pressure' | 'Temperature'>(
+    'Flowrate'
+  );
 
-  useEffect(() => {
-    let isMounted = true;
+  const loadSummary = () => {
+    setError('');
     fetchSummaries()
       .then((results) => {
-        if (!isMounted) return;
         setUploadsCount(results.length);
         setSummary(results[0]?.summary ?? null);
       })
       .catch(() => {
-        if (!isMounted) return;
         setError('Failed to load summary data.');
       });
+  };
 
-    return () => {
-      isMounted = false;
+  const loadLatestRows = () => {
+    fetchLatestRows()
+      .then((data) => setLatestRows(data))
+      .catch(() => setLatestRows(null));
+  };
+
+  useEffect(() => {
+    loadSummary();
+    loadLatestRows();
+    const handler = () => {
+      loadSummary();
+      loadLatestRows();
     };
+    window.addEventListener('datasets:updated', handler);
+    return () => window.removeEventListener('datasets:updated', handler);
   }, []);
 
   const typeDistributionData = useMemo(() => {
@@ -81,6 +96,30 @@ export default function Dashboard() {
       ],
     };
   }, [summary]);
+
+  const deepDiveData = useMemo(() => {
+    if (!latestRows?.rows?.length) return null;
+    const values = latestRows.rows
+      .map((row) => ({
+        name: row['Equipment Name'],
+        value: Number(row[metric]),
+      }))
+      .filter((item) => !Number.isNaN(item.value));
+
+    const top = values.sort((a, b) => b.value - a.value).slice(0, 20);
+
+    return {
+      labels: top.map((item) => item.name),
+      datasets: [
+        {
+          label: metric,
+          data: top.map((item) => item.value),
+          backgroundColor: 'rgba(56, 189, 248, 0.7)',
+          borderRadius: 6,
+        },
+      ],
+    };
+  }, [latestRows, metric]);
 
   const chartOptions = {
     responsive: true,
@@ -152,6 +191,28 @@ export default function Dashboard() {
             <p className="empty-state">Upload a CSV to view averages.</p>
           )}
         </div>
+      </section>
+
+      {/* DEEP DIVE */}
+      <section className="chart-card glass glow-hover fade-in neon-glow">
+        <h2 className="section-title">Single Metric Deep Dive</h2>
+        <div className="metric-toggle">
+          {(['Flowrate', 'Pressure', 'Temperature'] as const).map((item) => (
+            <button
+              key={item}
+              type="button"
+              className={`metric-pill ${metric === item ? 'active' : ''}`}
+              onClick={() => setMetric(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+        {deepDiveData ? (
+          <Bar data={deepDiveData} options={chartOptions} />
+        ) : (
+          <p className="empty-state">Upload a CSV to explore a metric.</p>
+        )}
       </section>
 
       {/* TABLE PLACEHOLDER */}

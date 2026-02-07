@@ -935,6 +935,30 @@ body::after {
   margin-bottom: 4rem;
 }
 
+.metric-toggle {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+  flex-wrap: wrap;
+}
+
+.metric-pill {
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(15, 32, 39, 0.6);
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.metric-pill.active {
+  color: #ffffff;
+  border-color: rgba(79, 172, 254, 0.7);
+  box-shadow: 0 0 16px rgba(79, 172, 254, 0.35);
+}
+
 .chart-card {
   padding: 2rem;
   min-height: 340px;

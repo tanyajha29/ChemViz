@@ -104,6 +104,57 @@ class DatasetSummaryListView(APIView):
         return Response({'results': data}, status=status.HTTP_200_OK)
 
 
+class DatasetLatestRowsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        upload = (
+            DatasetUpload.objects
+            .filter(user=request.user)
+            .order_by('-uploaded_at', '-id')
+            .first()
+        )
+        if not upload:
+            return Response({'rows': []}, status=status.HTTP_200_OK)
+
+        try:
+            df = pd.read_csv(upload.file.path)
+        except Exception as exc:
+            return Response(
+                {'error': 'Failed to read CSV file.', 'details': str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if df.empty:
+            return Response({'rows': []}, status=status.HTTP_200_OK)
+
+        normalized_columns = [str(col).strip() for col in df.columns]
+        missing = [col for col in REQUIRED_COLUMNS if col not in normalized_columns]
+        if missing:
+            return Response(
+                {
+                    'error': 'Missing required columns.',
+                    'missing_columns': missing,
+                    'received_columns': normalized_columns,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        df = df[REQUIRED_COLUMNS].copy()
+        df = df.head(200)
+        rows = df.to_dict(orient='records')
+
+        return Response(
+            {
+                'id': upload.id,
+                'name': upload.name,
+                'uploaded_at': upload.uploaded_at,
+                'rows': rows,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class DatasetReportView(APIView):
     permission_classes = [IsAuthenticated]
 

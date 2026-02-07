@@ -381,6 +381,20 @@ QMainWindow {
   color: #e2e8f0;
 }
 
+#metricToggle {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background-color: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+}
+
+#metricToggle[active="true"] {
+  border: 1px solid rgba(124, 58, 237, 0.6);
+  color: #f5f3ff;
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
+}
+
 /* =========================
    HOVER EFFECTS
 ========================= */

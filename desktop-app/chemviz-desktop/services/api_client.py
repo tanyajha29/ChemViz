@@ -94,6 +94,15 @@ class ApiClient:
         response.raise_for_status()
         return response.json()
 
+    def fetch_latest_rows(self) -> Dict[str, Any]:
+        response = requests.get(
+            f"{self.base_url}/api/datasets/latest/",
+            headers=self._headers(),
+            timeout=15,
+        )
+        response.raise_for_status()
+        return response.json()
+
     def upload_csv(self, file_path: str, name: Optional[str] = None) -> Dict[str, Any]:
         with open(file_path, "rb") as handle:
             files = {"file": handle}

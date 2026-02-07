@@ -24,6 +24,7 @@ export default function Upload() {
     try {
       const result = await uploadDataset(file, name);
       setMessage(`Upload successful: ${result.name}`);
+      window.dispatchEvent(new Event('datasets:updated'));
       setFile(null);
       setName('');
     } catch (err: unknown) {

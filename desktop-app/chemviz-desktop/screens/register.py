@@ -70,7 +70,7 @@ class RegisterScreen(QWidget):
         self.link_button.setObjectName("authLink")
         self.link_button.clicked.connect(self.login_requested.emit)
 
-        card_layout.addWidget(logo, alignment=None)
+        card_layout.addWidget(logo, alignment=Qt.AlignLeft)
         card_layout.addWidget(title)
         card_layout.addWidget(subtitle)
         card_layout.addWidget(self.username)

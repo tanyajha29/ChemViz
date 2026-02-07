@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QStyle,
+    QPushButton,
     QVBoxLayout,
     QWidget,
 )
@@ -20,6 +21,8 @@ class DashboardScreen(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.theme = "dark"
+        self.metric = "Flowrate"
+        self.latest_rows: list[dict] = []
         layout = QVBoxLayout(self)
         layout.setContentsMargins(32, 32, 32, 32)
         layout.setSpacing(26)
@@ -69,6 +72,31 @@ class DashboardScreen(QWidget):
         charts_grid.addWidget(self.avg_card, 0, 1)
         layout.addLayout(charts_grid)
 
+        self.deep_card = self._chart_card(
+            "Single Metric Deep Dive",
+            "Flowrate, Pressure, or Temperature",
+        )
+        deep_layout = self.deep_card.layout()
+
+        toggle_row = QHBoxLayout()
+        toggle_row.setSpacing(10)
+
+        self.btn_flow = self._metric_button("Flowrate")
+        self.btn_pressure = self._metric_button("Pressure")
+        self.btn_temp = self._metric_button("Temperature")
+
+        toggle_row.addWidget(self.btn_flow)
+        toggle_row.addWidget(self.btn_pressure)
+        toggle_row.addWidget(self.btn_temp)
+        toggle_row.addStretch()
+
+        deep_layout.addLayout(toggle_row)
+
+        self.deep_canvas = self._chart_canvas()
+        deep_layout.addWidget(self.deep_canvas)
+
+        layout.addWidget(self.deep_card)
+
         table_card = QFrame()
         table_card.setObjectName("sectionCard")
         table_layout = QVBoxLayout(table_card)
@@ -109,8 +137,9 @@ class DashboardScreen(QWidget):
             summary = results[0]["summary"] if results else {}
         except Exception:
             summary = {}
+            results = []
 
-        uploads = data.get("results", []) if data else []
+        uploads = results
         mapping = {
             "Total Equipment": summary.get("total_equipment"),
             "Avg Flowrate": summary.get("avg_flowrate"),
@@ -131,9 +160,32 @@ class DashboardScreen(QWidget):
         self._plot_averages(summary)
         self._render_table(uploads)
 
+        try:
+            latest = client.fetch_latest_rows()
+            self.latest_rows = latest.get("rows", [])
+        except Exception:
+            self.latest_rows = []
+
+        self._plot_deep_dive()
+
     def set_theme(self, theme: str) -> None:
         self.theme = theme
         self.refresh()
+
+    def _metric_button(self, label: str) -> QPushButton:
+        button = QPushButton(label)
+        button.setObjectName("metricToggle")
+        button.setProperty("active", label == self.metric)
+        button.clicked.connect(lambda: self._set_metric(label))
+        return button
+
+    def _set_metric(self, label: str) -> None:
+        self.metric = label
+        for btn in (self.btn_flow, self.btn_pressure, self.btn_temp):
+            btn.setProperty("active", btn.text() == label)
+            btn.style().unpolish(btn)
+            btn.style().polish(btn)
+        self._plot_deep_dive()
 
     def _format_value(self, value: object, unit: str) -> str:
         if value in (None, "", "--"):
@@ -297,6 +349,46 @@ class DashboardScreen(QWidget):
             return dt.strftime("%Y-%m-%d %H:%M")
         except ValueError:
             return value
+
+    def _plot_deep_dive(self) -> None:
+        fig = self.deep_canvas.figure
+        fig.clear()
+        ax = fig.add_subplot(111)
+        self._apply_matplotlib_style(ax)
+
+        if not self.latest_rows:
+            ax.text(0.5, 0.5, "No data", ha="center", va="center", color="#94a3b8")
+            ax.set_xticks([])
+            ax.set_yticks([])
+            self.deep_canvas.draw()
+            return
+
+        metric_key = self.metric
+        values = []
+        for row in self.latest_rows:
+            name = row.get("Equipment Name", "Equipment")
+            raw = row.get(metric_key)
+            try:
+                value = float(raw)
+            except (TypeError, ValueError):
+                continue
+            values.append((name, value))
+
+        if not values:
+            ax.text(0.5, 0.5, "No data", ha="center", va="center", color="#94a3b8")
+            ax.set_xticks([])
+            ax.set_yticks([])
+            self.deep_canvas.draw()
+            return
+
+        values = sorted(values, key=lambda item: item[1], reverse=True)[:15]
+        labels = [item[0] for item in values]
+        data = [item[1] for item in values]
+
+        ax.bar(labels, data, color="#7c3aed", alpha=0.85)
+        ax.set_title(f"{metric_key} (Top 15)")
+        ax.tick_params(axis="x", rotation=30)
+        self.deep_canvas.draw()
 
     def _table_row(
         self,
