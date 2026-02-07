@@ -235,23 +235,7 @@ Desktop
 2. Upload
    ![Desktop Upload](docs/desktop-upload.png)
 
-## Demo Video Script (2-3 Minutes)
-1. Intro (10-15s)
-   - "This is ChemViz, a hybrid web + desktop app for chemical equipment analytics."
-2. Login (15-20s)
-   - Show login in web app and successful navigation to dashboard.
-3. CSV Upload (20-30s)
-   - Upload `sample_equipment_data.csv` in web.
-   - Show success message and auto-refresh.
-4. Dashboard (30-40s)
-   - Show KPI cards and charts updated.
-   - Mention last 5 uploads rule.
-5. History / Report (20-30s)
-   - Open history and download PDF report.
-6. Desktop App (30-40s)
-   - Open desktop app, login, show same data/charts.
-7. Closing (10-15s)
-   - "Same API powers both clients; validation and analytics are consistent."
+
 
 ## Release
 Desktop download link (GitHub Releases):
