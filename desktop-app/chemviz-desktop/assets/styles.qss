@@ -81,6 +81,18 @@ QMainWindow {
   background-color: rgba(59, 130, 246, 0.25);
 }
 
+#logoutButton {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fecaca;
+}
+
+#logoutButton:hover {
+  background-color: rgba(239, 68, 68, 0.22);
+}
+
 #navMeta {
   color: #94a3b8;
   font-size: 12px;
@@ -215,7 +227,8 @@ QMainWindow {
 #infoCard,
 #chartTile,
 #historyCard,
-#glassCard {
+#glassCard,
+#profileCard {
   background-color: #111827;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -324,6 +337,11 @@ QMainWindow {
 #historyMeta {
   color: #64748b;
   font-size: 12px;
+}
+
+#profileRow {
+  font-size: 14px;
+  color: #e2e8f0;
 }
 
 /* =========================
