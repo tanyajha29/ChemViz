@@ -1342,6 +1342,59 @@ body::after {
   text-align: center;
 }
 
+.field-error {
+  font-size: 0.8rem;
+  color: #ff6b6b;
+  margin: 0 0 0.6rem;
+}
+
+/* Validation Summary */
+.validation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.validation-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.validation-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.validation-details h3,
+.validation-errors h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+
+.validation-details ul,
+.validation-errors ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.validation-errors {
+  margin-top: 1rem;
+  color: #fca5a5;
+}
+
+.muted-inline {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
 /* ===============================
    LAYOUT SYSTEM
 ================================ */

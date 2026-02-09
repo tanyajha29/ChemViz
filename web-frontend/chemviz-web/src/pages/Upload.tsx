@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiClipboard, FiUploadCloud } from 'react-icons/fi';
 
-import { uploadDataset } from '../api/datasets';
+import { uploadDataset, RowError, ValidationSummary } from '../api/datasets';
 
 export default function Upload() {
   const [file, setFile] = useState<File | null>(null);
@@ -9,6 +9,8 @@ export default function Upload() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [validation, setValidation] = useState<ValidationSummary | null>(null);
+  const [rowErrors, setRowErrors] = useState<RowError[]>([]);
   const maxFileSizeMb = 5;
   const maxFileSize = maxFileSizeMb * 1024 * 1024;
 
@@ -20,6 +22,8 @@ export default function Upload() {
   const handleFileChange = (nextFile: File | null) => {
     setError('');
     setMessage('');
+    setValidation(null);
+    setRowErrors([]);
     setFile(nextFile);
     if (!nextFile) {
       return;
@@ -37,6 +41,8 @@ export default function Upload() {
     event.preventDefault();
     setMessage('');
     setError('');
+    setValidation(null);
+    setRowErrors([]);
 
     if (!file) {
       setError('Please select a CSV file to upload.');
@@ -56,12 +62,20 @@ export default function Upload() {
     setLoading(true);
     try {
       const result = await uploadDataset(file, name);
+      const validationSummary =
+        result.validation_summary ?? result.summary?.validation ?? null;
+      setValidation(validationSummary);
+      setRowErrors(validationSummary?.row_errors ?? []);
       setMessage(`Upload successful: ${result.name}`);
       window.dispatchEvent(new Event('datasets:updated'));
       setFile(null);
       setName('');
     } catch (err: any) {
       const data = err?.response?.data;
+      if (data?.validation_summary) {
+        setValidation(data.validation_summary);
+        setRowErrors(data.validation_summary.row_errors ?? []);
+      }
       if (data?.error) {
         setError(String(data.error));
       } else {
@@ -148,6 +162,72 @@ export default function Upload() {
           </ul>
         </aside>
       </div>
+
+      {validation ? (
+        <section className="table-card glass fade-in neon-glow">
+          <h2 className="section-title">Validation Summary</h2>
+          <div className="validation-grid">
+            <div>
+              <span className="validation-label">Total Rows</span>
+              <strong>{validation.total_rows}</strong>
+            </div>
+            <div>
+              <span className="validation-label">Accepted Rows</span>
+              <strong>{validation.accepted_rows}</strong>
+            </div>
+            <div>
+              <span className="validation-label">Rejected Rows</span>
+              <strong>{validation.rejected_rows}</strong>
+            </div>
+          </div>
+
+          <div className="validation-details">
+            <div>
+              <h3>Missing Values</h3>
+              <ul>
+                {Object.entries(validation.missing_values || {}).map(([key, value]) => (
+                  <li key={`missing-${key}`}>
+                    {key}: {value}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3>Invalid Values</h3>
+              <ul>
+                {Object.entries(validation.invalid_values || {}).map(([key, value]) => (
+                  <li key={`invalid-${key}`}>
+                    {key}: {value}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3>Out of Range</h3>
+              <ul>
+                {Object.entries(validation.out_of_range || {}).map(([key, value]) => (
+                  <li key={`range-${key}`}>
+                    {key}: {value}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {rowErrors.length ? (
+            <div className="validation-errors">
+              <h3>Row Level Issues (first {rowErrors.length})</h3>
+              <ul>
+                {rowErrors.map((issue, idx) => (
+                  <li key={`${issue.row}-${issue.column}-${idx}`}>
+                    Row {issue.row}: {issue.column} - {issue.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
     </div>
   );
 }

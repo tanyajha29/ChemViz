@@ -9,6 +9,15 @@ export default function UploadHistory() {
   const [error, setError] = useState('');
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
 
+  const formatBytes = (bytes?: number) => {
+    if (!bytes && bytes !== 0) return '—';
+    const mb = bytes / (1024 * 1024);
+    if (mb < 1) {
+      return `${(bytes / 1024).toFixed(1)} KB`;
+    }
+    return `${mb.toFixed(2)} MB`;
+  };
+
   useEffect(() => {
     let isMounted = true;
     fetchSummaries()
@@ -63,7 +72,10 @@ export default function UploadHistory() {
           <thead>
             <tr>
               <th>Dataset</th>
+              <th>Uploaded By</th>
               <th>Uploaded</th>
+              <th>Rows</th>
+              <th>Size</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -71,7 +83,25 @@ export default function UploadHistory() {
             {uploads.map((upload) => (
               <tr key={upload.id}>
                 <td>{upload.name}</td>
+                <td>{upload.uploaded_by ?? '—'}</td>
                 <td>{new Date(upload.uploaded_at).toLocaleString()}</td>
+                <td>
+                  {upload.row_count ??
+                    upload.summary?.row_count ??
+                    upload.summary?.validation?.total_rows ??
+                    '—'}
+                  {upload.summary?.validation?.rejected_rows ? (
+                    <span className="muted-inline">
+                      {' '}
+                      (Rejected: {upload.summary.validation.rejected_rows})
+                    </span>
+                  ) : null}
+                </td>
+                <td>
+                  {formatBytes(
+                    upload.file_size_bytes ?? upload.summary?.file_size_bytes
+                  )}
+                </td>
                 <td>
                   <button
                     type="button"

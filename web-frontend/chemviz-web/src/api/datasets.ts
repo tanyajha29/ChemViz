@@ -6,6 +6,25 @@ export type DatasetSummary = {
   avg_pressure: number | null;
   avg_temperature: number | null;
   type_distribution: Record<string, number>;
+  row_count?: number;
+  file_size_bytes?: number;
+  validation?: ValidationSummary;
+};
+
+export type RowError = {
+  row: number;
+  column: string;
+  message: string;
+};
+
+export type ValidationSummary = {
+  total_rows: number;
+  accepted_rows: number;
+  rejected_rows: number;
+  missing_values: Record<string, number>;
+  invalid_values: Record<string, number>;
+  out_of_range: Record<string, number>;
+  row_errors?: RowError[];
 };
 
 export type UploadResult = {
@@ -13,6 +32,12 @@ export type UploadResult = {
   name: string;
   uploaded_at: string;
   summary: DatasetSummary;
+  uploaded_by?: string;
+  row_count?: number;
+  file_size_bytes?: number;
+  accepted_rows?: number;
+  rejected_rows?: number;
+  validation_summary?: ValidationSummary;
 };
 
 export async function uploadDataset(file: File, name?: string) {

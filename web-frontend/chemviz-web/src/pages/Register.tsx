@@ -13,6 +13,12 @@ export default function Register() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{
+    fullName?: string;
+    email?: string;
+    password?: string;
+    confirm?: string;
+  }>({});
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const namePattern = /^[A-Za-z ]+$/;
@@ -34,30 +40,41 @@ export default function Register() {
     event.preventDefault();
     setError('');
     setSuccess('');
-    if (!trimmedFullName || !trimmedEmail || !password) {
-      setError('Full name, email, and password are required.');
-      return;
+    setFieldErrors({});
+    const nextErrors: {
+      fullName?: string;
+      email?: string;
+      password?: string;
+      confirm?: string;
+    } = {};
+
+    if (!trimmedFullName) {
+      nextErrors.fullName = 'Full name is required.';
+    } else if (!isNameValid) {
+      nextErrors.fullName = 'Full name must be 2+ characters (letters and spaces).';
     }
 
-    if (!isNameValid) {
-      setError('Full name must be at least 2 characters and use letters only.');
-      return;
+    if (!trimmedEmail) {
+      nextErrors.email = 'Email is required.';
+    } else if (!emailPattern.test(trimmedEmail)) {
+      nextErrors.email = 'Please enter a valid email address.';
     }
 
-    if (!emailPattern.test(trimmedEmail)) {
-      setError('Please enter a valid email address.');
-      return;
+    if (!password) {
+      nextErrors.password = 'Password is required.';
+    } else if (!isPasswordValid) {
+      nextErrors.password =
+        'Password must be 8+ chars with uppercase, lowercase, number (no spaces).';
     }
 
-    if (!isPasswordValid) {
-      setError(
-        'Password must be at least 8 characters and include uppercase, lowercase, and a number (no spaces).'
-      );
-      return;
+    if (!confirmPassword) {
+      nextErrors.confirm = 'Confirm password is required.';
+    } else if (password !== confirmPassword) {
+      nextErrors.confirm = 'Passwords do not match.';
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+    if (Object.keys(nextErrors).length) {
+      setFieldErrors(nextErrors);
       return;
     }
 
@@ -71,6 +88,15 @@ export default function Register() {
     } catch (err: any) {
       const data = err?.response?.data;
       if (data && typeof data === 'object') {
+        const serverErrors: typeof nextErrors = {};
+        if (data.full_name) serverErrors.fullName = data.full_name;
+        if (data.email) serverErrors.email = data.email;
+        if (data.password) serverErrors.password = data.password;
+        if (data.confirm_password) serverErrors.confirm = data.confirm_password;
+        if (Object.keys(serverErrors).length) {
+          setFieldErrors(serverErrors);
+          return;
+        }
         const firstMessage = Object.values(data)[0];
         if (typeof firstMessage === 'string') {
           setError(firstMessage);
@@ -107,6 +133,9 @@ export default function Register() {
               required
             />
           </div>
+          {fieldErrors.fullName && (
+            <p className="field-error">{fieldErrors.fullName}</p>
+          )}
 
           <div className="input-group">
             <FiMail className="input-icon" />
@@ -118,6 +147,9 @@ export default function Register() {
               required
             />
           </div>
+          {fieldErrors.email && (
+            <p className="field-error">{fieldErrors.email}</p>
+          )}
 
           <div className="input-group">
             <FiLock className="input-icon" />
@@ -129,6 +161,9 @@ export default function Register() {
               required
             />
           </div>
+          {fieldErrors.password && (
+            <p className="field-error">{fieldErrors.password}</p>
+          )}
 
           <div className="input-group">
             <FiLock className="input-icon" />
@@ -140,6 +175,9 @@ export default function Register() {
               required
             />
           </div>
+          {fieldErrors.confirm && (
+            <p className="field-error">{fieldErrors.confirm}</p>
+          )}
 
           {error && <p className="error-text">{error}</p>}
           {success && <p className="success-text">{success}</p>}

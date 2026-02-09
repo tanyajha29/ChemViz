@@ -10,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ identifier?: string; password?: string }>({});
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const trimmedIdentifier = identifier.trim();
@@ -24,20 +25,25 @@ export default function Login() {
     event.preventDefault();
     setError('');
     setSuccess('');
-    if (!trimmedIdentifier || !password) {
-      setError('Please enter your email/username and password.');
-      return;
+    setFieldErrors({});
+    const nextErrors: { identifier?: string; password?: string } = {};
+
+    if (!trimmedIdentifier) {
+      nextErrors.identifier = 'Email or username is required.';
+    } else if (isEmailInput && !emailPattern.test(trimmedIdentifier)) {
+      nextErrors.identifier = 'Please enter a valid email address.';
     }
-    if (isEmailInput && !emailPattern.test(trimmedIdentifier)) {
-      setError('Please enter a valid email address.');
-      return;
+
+    if (!password) {
+      nextErrors.password = 'Password is required.';
+    } else if (password.length < 8) {
+      nextErrors.password = 'Password must be at least 8 characters.';
+    } else if (!isPasswordTrimmed) {
+      nextErrors.password = 'Password cannot start or end with spaces.';
     }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
-    if (!isPasswordTrimmed) {
-      setError('Password cannot start or end with spaces.');
+
+    if (Object.keys(nextErrors).length) {
+      setFieldErrors(nextErrors);
       return;
     }
     setLoading(true);
@@ -48,7 +54,7 @@ export default function Login() {
       window.alert('Login successful.');
       navigate('/dashboard');
     } catch {
-      setError('Invalid email or password');
+      setFieldErrors({ password: 'Invalid email or password.' });
     } finally {
       setLoading(false);
     }
@@ -78,6 +84,9 @@ export default function Login() {
               required
             />
           </div>
+          {fieldErrors.identifier && (
+            <p className="field-error">{fieldErrors.identifier}</p>
+          )}
 
           <div className="input-group">
             <FiLock className="input-icon" />
@@ -90,6 +99,9 @@ export default function Login() {
               required
             />
           </div>
+          {fieldErrors.password && (
+            <p className="field-error">{fieldErrors.password}</p>
+          )}
 
           {error && <p className="error-text">{error}</p>}
           {success && <p className="success-text">{success}</p>}
