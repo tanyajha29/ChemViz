@@ -7,7 +7,6 @@ export default function Login() {
   const navigate = useNavigate();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{ identifier?: string; password?: string }>({});
@@ -23,7 +22,6 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
     setSuccess('');
     setFieldErrors({});
     const nextErrors: { identifier?: string; password?: string } = {};
@@ -50,9 +48,8 @@ export default function Login() {
 
     try {
       await login(trimmedIdentifier, password);
-      setSuccess('Login successful.');
-      window.alert('Login successful.');
-      navigate('/dashboard');
+      setSuccess('Login successful. Redirecting...');
+      setTimeout(() => navigate('/dashboard'), 600);
     } catch {
       setFieldErrors({ password: 'Invalid email or password.' });
     } finally {
@@ -84,6 +81,7 @@ export default function Login() {
               required
             />
           </div>
+          <p className="field-helper">Email format: name@domain.com</p>
           {fieldErrors.identifier && (
             <p className="field-error">{fieldErrors.identifier}</p>
           )}
@@ -99,11 +97,11 @@ export default function Login() {
               required
             />
           </div>
+          <p className="field-helper">Minimum 8 characters. No leading/trailing spaces.</p>
           {fieldErrors.password && (
             <p className="field-error">{fieldErrors.password}</p>
           )}
 
-          {error && <p className="error-text">{error}</p>}
           {success && <p className="success-text">{success}</p>}
 
           <button type="submit" disabled={!isFormValid || loading}>

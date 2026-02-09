@@ -1348,6 +1348,12 @@ body::after {
   margin: 0 0 0.6rem;
 }
 
+.field-helper {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0.2rem 0 0.6rem;
+}
+
 /* Validation Summary */
 .validation-grid {
   display: grid;

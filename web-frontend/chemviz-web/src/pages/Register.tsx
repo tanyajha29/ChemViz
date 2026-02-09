@@ -10,7 +10,6 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{
@@ -19,6 +18,7 @@ export default function Register() {
     password?: string;
     confirm?: string;
   }>({});
+  const [formError, setFormError] = useState('');
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const namePattern = /^[A-Za-z ]+$/;
@@ -38,7 +38,7 @@ export default function Register() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError('');
+    setFormError('');
     setSuccess('');
     setFieldErrors({});
     const nextErrors: {
@@ -82,9 +82,8 @@ export default function Register() {
 
     try {
       await registerUser(trimmedFullName, trimmedEmail, password, confirmPassword);
-      setSuccess('Account created successfully.');
-      window.alert('Account created successfully.');
-      navigate('/dashboard');
+      setSuccess('Account created. Redirecting...');
+      setTimeout(() => navigate('/dashboard'), 700);
     } catch (err: any) {
       const data = err?.response?.data;
       if (data && typeof data === 'object') {
@@ -99,11 +98,11 @@ export default function Register() {
         }
         const firstMessage = Object.values(data)[0];
         if (typeof firstMessage === 'string') {
-          setError(firstMessage);
+          setFormError(firstMessage);
           return;
         }
       }
-      setError('Registration failed. Please try again.');
+      setFormError('Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -133,6 +132,7 @@ export default function Register() {
               required
             />
           </div>
+          <p className="field-helper">Letters and spaces only. Minimum 2 characters.</p>
           {fieldErrors.fullName && (
             <p className="field-error">{fieldErrors.fullName}</p>
           )}
@@ -147,6 +147,7 @@ export default function Register() {
               required
             />
           </div>
+          <p className="field-helper">Use a valid email format (name@domain.com).</p>
           {fieldErrors.email && (
             <p className="field-error">{fieldErrors.email}</p>
           )}
@@ -161,6 +162,9 @@ export default function Register() {
               required
             />
           </div>
+          <p className="field-helper">
+            Minimum 8 characters, with uppercase, lowercase, and a number.
+          </p>
           {fieldErrors.password && (
             <p className="field-error">{fieldErrors.password}</p>
           )}
@@ -175,11 +179,12 @@ export default function Register() {
               required
             />
           </div>
+          <p className="field-helper">Must match the password exactly.</p>
           {fieldErrors.confirm && (
             <p className="field-error">{fieldErrors.confirm}</p>
           )}
 
-          {error && <p className="error-text">{error}</p>}
+          {formError && <p className="field-error">{formError}</p>}
           {success && <p className="success-text">{success}</p>}
 
           <button type="submit" disabled={!isFormValid || loading}>
