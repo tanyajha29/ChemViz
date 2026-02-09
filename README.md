@@ -6,11 +6,13 @@ React + Chart.js web frontend, and a PyQt5 + Matplotlib desktop app.
 
 ## Highlights
 1. CSV upload with schema and data validation
+2. Validation summary (accepted/rejected rows, row-level issues)
 2. Summary analytics (count, averages, type distribution)
 3. Charts on both web and desktop
-4. Last 5 uploads stored per user
-5. PDF report generation
-6. Token-based authentication
+4. History + audit details (rows, file size, uploader)
+5. Last 5 uploads stored per user
+6. PDF report generation (polished layout)
+7. Token-based authentication
 
 ## Architecture
 CSV -> Django REST API -> Analytics (Pandas) -> Web (React) / Desktop (PyQt5)
@@ -56,6 +58,10 @@ ChemViz/
 |-- sample_data/            # Sample CSVs
 |-- requirements.txt        # Combined Python deps (backend + desktop)
 `-- README.md
+```
+Backend documentation:
+```
+backend/README.md
 ```
 
 ## Prerequisites
@@ -176,7 +182,8 @@ Authorization: Token <token>
 6. GET  /api/summary/ - last 5 summaries (per user)
 7. GET  /api/history/ - alias for summaries
 8. GET  /api/datasets/latest/ - latest rows
-9. GET  /api/report/pdf/ - latest PDF report
+9. GET  /api/datasets/report/<id>/ - PDF report by upload id
+10. GET /api/report/pdf/ - latest PDF report
 
 ## CSV Requirements
 Required columns:
@@ -191,6 +198,15 @@ Validation rules:
 4. Flowrate >= 0
 5. Pressure >= 0
 6. Temperature between -50 and 500
+
+Validation summary includes:
+1. Total rows
+2. Accepted rows
+3. Rejected rows
+4. Missing values per column
+5. Invalid numeric values per column
+6. Out-of-range counts per column
+7. Row-level issues (line numbers)
 
 Sample file:
 ```
