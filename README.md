@@ -69,6 +69,21 @@ backend/README.md
 2. Node.js 18+ and npm
 3. Git
 
+## Quick Start Scripts
+Run setup once, then start everything with one command.
+
+Windows PowerShell:
+```powershell
+scripts\\setup.ps1
+scripts\\run-all.ps1
+```
+
+Git Bash / macOS / Linux:
+```bash
+bash scripts/setup.sh
+bash scripts/run-all.sh
+```
+
 ## Backend Setup (Django + DRF)
 1. Create and activate a virtual environment:
 ```powershell
