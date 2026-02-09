@@ -1,53 +1,18 @@
 # ChemViz - Chemical Equipment Parameter Visualizer
 
-ChemViz is a hybrid Web + Desktop application for uploading chemical equipment datasets,
-calculating analytics, and visualizing results. It includes a Django REST backend, a
-React + Chart.js web frontend, and a PyQt5 + Matplotlib desktop app.
+ChemViz is a hybrid Web + Desktop application for uploading chemical equipment datasets, computing analytics, and visualizing results. It ships with a Django REST backend, a React + Chart.js web UI, and a PyQt5 + Matplotlib desktop app.
 
 ## Highlights
-1. CSV upload with schema and data validation
-2. Validation summary (accepted/rejected rows, row-level issues)
-2. Summary analytics (count, averages, type distribution)
-3. Charts on both web and desktop
+1. CSV upload with schema + data validation
+2. Validation summary with row-level issues
+3. Summary analytics and charts on web + desktop
 4. History + audit details (rows, file size, uploader)
 5. Last 5 uploads stored per user
-6. PDF report generation (polished layout)
+6. Polished PDF report generation
 7. Token-based authentication
 
 ## Architecture
-CSV -> Django REST API -> Analytics (Pandas) -> Web (React) / Desktop (PyQt5)
-
-## Architecture Diagram (ASCII)
-```
-            +-------------------+
-            |   CSV Dataset     |
-            +---------+---------+
-                      |
-                      v
-            +-------------------+
-            | Django REST API   |
-            |  Upload + Auth    |
-            +---------+---------+
-                      |
-                      v
-            +-------------------+
-            |  Pandas Analytics |
-            |  Summary + Types  |
-            +---------+---------+
-                      |
-        +-------------+-------------+
-        |                           |
-        v                           v
-  +-------------+             +--------------+
-  |  React Web  |             |  PyQt Desktop|
-  | Chart.js UI |             | Matplotlib UI|
-  +-------------+             +--------------+
-```
-
-## Tech Stack
-1. Backend: Django, DRF, Pandas, SQLite
-2. Web: React, Chart.js
-3. Desktop: PyQt5, Matplotlib
+CSV -> Django REST API -> Pandas analytics -> Web (React) + Desktop (PyQt5)
 
 ## Project Structure
 ```
@@ -56,10 +21,11 @@ ChemViz/
 |-- web-frontend/           # React + Chart.js
 |-- desktop-app/            # PyQt5 + Matplotlib
 |-- sample_data/            # Sample CSVs
+|-- scripts/                # Setup/run scripts
 |-- requirements.txt        # Combined Python deps (backend + desktop)
 `-- README.md
 ```
-Backend documentation:
+Backend docs:
 ```
 backend/README.md
 ```
@@ -69,13 +35,11 @@ backend/README.md
 2. Node.js 18+ and npm
 3. Git
 
-## Quick Start Scripts
-Run setup once, then start everything with one command.
-
+## Quick Start
 Windows PowerShell:
 ```powershell
-scripts\\setup.ps1
-scripts\\run-all.ps1
+scripts\setup.ps1
+scripts\run-all.ps1
 ```
 
 Git Bash / macOS / Linux:
@@ -84,68 +48,38 @@ bash scripts/setup.sh
 bash scripts/run-all.sh
 ```
 
-## Backend Setup (Django + DRF)
-1. Create and activate a virtual environment:
+## Manual Setup
+Backend (Django + DRF):
 ```powershell
 python -m venv backend\.venv
 backend\.venv\Scripts\Activate.ps1
-```
-
-2. Install dependencies:
-```powershell
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-```
-
-3. Run migrations:
-```powershell
 python backend\manage.py migrate
-```
-
-4. Create a superuser (optional, for admin):
-```powershell
-python backend\manage.py createsuperuser
-```
-
-5. Start the backend:
-```powershell
 python backend\manage.py runserver
 ```
-
 Backend runs at:
 ```
 http://127.0.0.1:8000
 ```
 
-## Web Frontend Setup (React + Chart.js)
-1. Install dependencies:
+Web Frontend (React + Chart.js):
 ```powershell
 cd web-frontend\chemviz-web
 npm install
-```
-
-2. Start the dev server:
-```powershell
 npm run dev
 ```
-
 Frontend runs at:
 ```
 http://localhost:5173
 ```
 
-Optional API base URL (create `.env` inside `web-frontend/chemviz-web`):
+Optional API base URL (create `web-frontend/chemviz-web/.env`):
 ```
 VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
 
-## Desktop App Setup (PyQt5 + Matplotlib)
-1. Install desktop requirements (if not using combined requirements.txt):
-```powershell
-python -m pip install -r desktop-app\chemviz-desktop\requirements.txt
-```
-
-2. Run the app:
+Desktop App (PyQt5 + Matplotlib):
 ```powershell
 cd desktop-app\chemviz-desktop
 python main.py
@@ -156,8 +90,7 @@ From `desktop-app/chemviz-desktop`:
 ```powershell
 pyinstaller --noconsole --onefile --name ChemVizDesktop --add-data "assets;assets" main.py
 ```
-
-The executable will be created at:
+Executable path:
 ```
 desktop-app/chemviz-desktop/dist/ChemVizDesktop.exe
 ```
@@ -189,16 +122,16 @@ Authorization: Token <token>
 ```
 
 ## Key API Endpoints
-1. POST /api/auth/register/ - register
-2. POST /api/auth/token/ - login
-3. POST /api/auth/logout/ - logout
-4. GET  /api/auth/me/ - profile
-5. POST /api/upload/ - upload CSV
-6. GET  /api/summary/ - last 5 summaries (per user)
-7. GET  /api/history/ - alias for summaries
-8. GET  /api/datasets/latest/ - latest rows
-9. GET  /api/datasets/report/<id>/ - PDF report by upload id
-10. GET /api/report/pdf/ - latest PDF report
+1. POST /api/auth/register/
+2. POST /api/auth/token/
+3. POST /api/auth/logout/
+4. GET /api/auth/me/
+5. POST /api/upload/
+6. GET /api/summary/
+7. GET /api/history/
+8. GET /api/datasets/latest/
+9. GET /api/datasets/report/<id>/
+10. GET /api/report/pdf/
 
 ## CSV Requirements
 Required columns:
@@ -223,7 +156,7 @@ Validation summary includes:
 6. Out-of-range counts per column
 7. Row-level issues (line numbers)
 
-Sample file:
+Sample data:
 ```
 sample_data/sample_equipment_data.csv
 ```
@@ -234,33 +167,29 @@ sample_data/sample_equipment_data.csv
 
 ## Troubleshooting
 1. ModuleNotFoundError: pandas
-   - Run: `python -m pip install -r requirements.txt`
-
+   Run: `python -m pip install -r requirements.txt`
 2. 401 Unauthorized
-   - You are not logged in or token is missing.
-
+   Ensure token is set and request headers include `Authorization: Token ...`
 3. no such table: datasets_datasetupload
-   - Run: `python backend\manage.py migrate`
-
+   Run: `python backend\manage.py migrate`
 4. Frontend shows no data
-   - Upload a CSV first or verify the token is stored.
+   Upload a CSV first or verify auth token storage
 
 ## Screenshots
-Web
-1. Login
-   ![Web Login](docs/web-login.png)
-2. Dashboard
-   ![Web Dashboard](docs/web-Dashboard.png)
-3. Upload 
-   ![Web Upload](docs/web-upload.png)
+Web Login:
+![Web Login](docs/web-login.png)
 
-Desktop
-1. Dashboard
-   ![Desktop Dashboard](docs/desktop-Dashboard.png)
-2. Upload
-   ![Desktop Upload](docs/desktop-upload.png)
+Web Dashboard:
+![Web Dashboard](docs/web-Dashboard.png)
 
+Web Upload:
+![Web Upload](docs/web-upload.png)
 
+Desktop Dashboard:
+![Desktop Dashboard](docs/desktop-Dashboard.png)
+
+Desktop Upload:
+![Desktop Upload](docs/desktop-upload.png)
 
 ## Release
 Desktop download link (GitHub Releases):
@@ -270,7 +199,7 @@ https://github.com/tanyajha29/ChemViz/releases/latest/download/ChemVizDesktop.ex
 
 Release steps:
 1. Build the exe with PyInstaller
-2. Create a GitHub release tag (e.g., v1.0.0)
+2. Create a GitHub release tag (example: v1.0.0)
 3. Upload `ChemVizDesktop.exe` as a release asset
 
 ## License
