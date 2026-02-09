@@ -245,12 +245,6 @@ sample_data/sample_equipment_data.csv
 4. Frontend shows no data
    - Upload a CSV first or verify the token is stored.
 
-## Submission Checklist
-1. Source code on GitHub
-2. README with setup instructions
-3. Demo video (2-3 minutes)
-4. Optional deployment link
-
 ## Screenshots
 Web
 1. Login
