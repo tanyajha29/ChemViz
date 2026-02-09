@@ -78,6 +78,10 @@ Optional API base URL (create `web-frontend/chemviz-web/.env`):
 ```
 VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
+Template:
+```
+web-frontend/chemviz-web/.env.example
+```
 
 Desktop App (PyQt5 + Matplotlib):
 ```powershell
@@ -165,6 +169,11 @@ sample_data/sample_equipment_data.csv
 1. Each user sees only their own uploads.
 2. Only the latest 5 uploads are stored per user.
 
+## Known Limitations
+1. Max file size: 5 MB
+2. Max rows per CSV: 10,000
+3. Desktop build is Windows-focused (PyInstaller)
+
 ## Troubleshooting
 1. ModuleNotFoundError: pandas
    Run: `python -m pip install -r requirements.txt`
@@ -175,18 +184,25 @@ sample_data/sample_equipment_data.csv
 4. Frontend shows no data
    Upload a CSV first or verify auth token storage
 
+## Demo Flow (2-3 minutes)
+1. Login or register
+2. Upload the sample CSV
+3. Review dashboard KPI + charts
+4. Open history and download PDF report
+5. Launch desktop app and show the same dataset
+
 ## Screenshots
 Web Login:
 ![Web Login](docs/web-login.png)
 
 Web Dashboard:
-![Web Dashboard](docs/web-Dashboard.png)
+![Web Dashboard](docs/web-dashboard.png)
 
 Web Upload:
 ![Web Upload](docs/web-upload.png)
 
 Desktop Dashboard:
-![Desktop Dashboard](docs/desktop-Dashboard.png)
+![Desktop Dashboard](docs/desktop-dashboard.png)
 
 Desktop Upload:
 ![Desktop Upload](docs/desktop-upload.png)
