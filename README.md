@@ -251,7 +251,7 @@ Web
    ![Web Login](docs/web-login.png)
 2. Dashboard
    ![Web Dashboard](docs/web-Dashboard.png)
-3. Upload
+3. Upload 
    ![Web Upload](docs/web-upload.png)
 
 Desktop
